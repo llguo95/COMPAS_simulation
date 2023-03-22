@@ -30,7 +30,7 @@ source "$(conda info --base)/etc/profile.d/conda.sh"
 
 # Activate conda, run job, deactivate conda
 conda activate COMPAS_env
-srun python3 ./../run_ansys_test.py
+srun python3 ./../main.py
 conda deactivate
 
 tail -20 ansys_solve.out
