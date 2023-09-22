@@ -4,9 +4,6 @@ import f3dasm
 import hydra
 from compas_script import compas_function
 
-from omegaconf import OmegaConf
-OmegaConf.register_new_resolver("eval", eval)
-
 
 @hydra.main(config_path=".", config_name="config")
 def main(config):
