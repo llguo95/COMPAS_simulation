@@ -1,6 +1,6 @@
 #!/bin/bash -l
 
-#SBATCH -D ./../resources/suboutput/ 					# directory where the mpiexec command is ran
+#SBATCH -D ./../COMPAS10/suboutput/ 					# directory where the mpiexec command is ran
 #SBATCH -J "compas_mfb"            			# name of the job (can be change to whichever name you like)
 #SBATCH --get-user-env             			# to set environment variables
 

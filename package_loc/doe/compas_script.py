@@ -6,6 +6,7 @@ import shutil
 import socket
 import pandas as pd
 import fileinput
+from pathlib import Path
 
 
 def compas_function(design: f3dasm.Design, slurm_jobid=0):
@@ -21,7 +22,7 @@ def compas_function(design: f3dasm.Design, slurm_jobid=0):
 
 def compas_objective(ddx, ddy, rrotz, jobnumber=0, slurm_jobid=0):
     # Resource and work directories
-    resources_directory = "/home/leoguo/GitHub/COMPAS_simulation/package_loc/COMPAS10"
+    resources_directory = str(Path(__file__).parent.parent / "COMPAS10")
     work_directory = resources_directory
 
     # Input file
