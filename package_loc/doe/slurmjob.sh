@@ -15,6 +15,8 @@
 #SBATCH --mem=0
 #SBATCH --account=research-eemcs-me
 
+conda activate compas_env
+
 myjobid=$SLURM_JOB_ID
 echo "myjobid = " $myjobid
 
