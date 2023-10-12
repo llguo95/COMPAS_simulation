@@ -9,7 +9,7 @@ from compas_script import compas_function
 def main(config):
     # If it is the first job in the array,
     # first create the designspace, then execute my_function on the designs.
-    if config.slurm.arrayid == 0:
+    if int(config.slurm.arrayid) == 0:
         """Block 1: Design of Experiment"""
 
         # Filling the design space
@@ -28,7 +28,7 @@ def main(config):
 
     # In any other case, the design has already been made
     # Therefore, load it from disk and run my_function on it.
-    elif config.slurm.arrayid > 0:
+    elif int(config.slurm.arrayid) > 0:
         # Retrieve the file from disk
         data = None
         while data is None:
