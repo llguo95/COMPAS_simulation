@@ -22,13 +22,12 @@ def compas_function(design: f3dasm.Design, slurm_jobid=0):
 
 def compas_objective(ddx, ddy, rrotz, jobnumber=0, slurm_jobid=0):
     # Resource and work directories
-    resources_directory = str(Path(__file__).parent.parent / "COMPAS10")
-    work_directory = resources_directory
+    resources_directory = str(Path(__file__).parent.parent / "COMPAS10" / "subinput")
+    work_directory = str(Path(__file__).parent.parent / "COMPAS10" / "suboutput" / "outputs" / str(slurm_jobid) / str(jobnumber))
 
     # Input file
-    ansys_input_path_source = work_directory + "/subinput/submodel_run.txt"
-    ansys_input_path = work_directory + \
-        "/subinput/submodel_run_%s_%d.txt" % (str(slurm_jobid), jobnumber)
+    ansys_input_path_source = resources_directory + "/submodel_run.txt"
+    ansys_input_path = "/submodel_run_%s_%d.txt" % (str(slurm_jobid), jobnumber)
     shutil.copyfile(ansys_input_path_source, ansys_input_path)
     input_file = fileinput.FileInput(files=ansys_input_path, inplace=True)
     for line in input_file:
@@ -38,18 +37,21 @@ def compas_objective(ddx, ddy, rrotz, jobnumber=0, slurm_jobid=0):
             print('ddy=' + str(ddy), end='\n')
         elif "rrotz=" in line:  # rrotz
             print('rrotz=' + str(rrotz), end='\n')
+        elif "../subinput" in line:
+            line = line.replace("../subinput", resources_directory)
+            line = line.replace(",'.'", '')
+            print(line, end='')
         else:
             print(line, end='')
 
     # Output file
-    suboutput = 'suboutput_sample' if socket.gethostname() == 'hp' else 'suboutput'
-    suboutput_directory = work_directory + '/' + suboutput
-    if not os.path.isdir(suboutput_directory):
-        os.mkdir(suboutput_directory)
-    ansys_output_path = suboutput_directory + "/submodell_test.lis"
+    if not os.path.isdir(work_directory):
+        os.makedirs(work_directory)
+
+    ansys_output_path = work_directory + "/submodell_test.lis"
 
     # The command line
-    cmdl = "ansys232 -b -dis -mpi openmpi -np 24 -g -i %s >& ansys_solve.out" % ansys_input_path
+    cmdl = "ansys232 -dir %s -b -dis -mpi openmpi -np 24 -g -i %s >& ansys_solve.out" % (work_directory, ansys_input_path)
 
     # Running the command line
     if socket.gethostname() == 'hp':
@@ -65,7 +67,7 @@ def compas_objective(ddx, ddy, rrotz, jobnumber=0, slurm_jobid=0):
         output = np.nan
 
     # Cleaning up the output directory
-    if socket.gethostname() != 'hp' and os.path.isdir(suboutput_directory):
-        shutil.rmtree(suboutput_directory)
+    if socket.gethostname() != 'hp' and os.path.isdir(work_directory):
+        shutil.rmtree(work_directory)
 
     return output
