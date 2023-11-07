@@ -27,7 +27,7 @@ def compas_objective(ddx, ddy, rrotz, jobnumber=0, slurm_jobid=0):
 
     # Input file
     ansys_input_path_source = resources_directory + "/submodel_run.txt"
-    ansys_input_path = "/submodel_run_%s_%d.txt" % (str(slurm_jobid), jobnumber)
+    ansys_input_path = os.getcwd() + "/submodel_run_%s_%d.txt" % (str(slurm_jobid), jobnumber)
     shutil.copyfile(ansys_input_path_source, ansys_input_path)
     input_file = fileinput.FileInput(files=ansys_input_path, inplace=True)
     for line in input_file:
@@ -51,7 +51,7 @@ def compas_objective(ddx, ddy, rrotz, jobnumber=0, slurm_jobid=0):
     ansys_output_path = work_directory + "/submodell_test.lis"
 
     # The command line
-    cmdl = "ansys232 -dir %s -b -dis -mpi openmpi -np 24 -g -i %s >& ansys_solve.out" % (work_directory, ansys_input_path)
+    cmdl = "ansys232 -dir %s -b -dis -mpi openmpi -np 6 -g -i %s >& ansys_solve.out" % (work_directory, ansys_input_path)
 
     # Running the command line
     if socket.gethostname() == 'hp':
@@ -66,8 +66,8 @@ def compas_objective(ddx, ddy, rrotz, jobnumber=0, slurm_jobid=0):
         logging.error("No output found.")
         output = np.nan
 
-    # Cleaning up the output directory
-    if socket.gethostname() != 'hp' and os.path.isdir(work_directory):
-        shutil.rmtree(work_directory)
+    # # Cleaning up the output directory
+    # if socket.gethostname() != 'hp' and os.path.isdir(work_directory):
+    #     shutil.rmtree(work_directory)
 
     return output
