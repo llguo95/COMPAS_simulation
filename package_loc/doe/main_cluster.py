@@ -24,7 +24,7 @@ def main(config):
         data.run(
             compas_function, mode='cluster',
             kwargs={
-                "slurm_jobid": config.slurm_jobid,
+                "slurm_jobid": config.slurm.jobid,
             }
         )
 
@@ -36,6 +36,7 @@ def main(config):
         while data is None:
             try:
                 data = f3dasm.ExperimentData.from_file()
+                logging.info("Data found. Executing data.run")
             except:
                 logging.error("Data not found. Retrying in 5 seconds...")
                 time.sleep(5)
@@ -44,12 +45,12 @@ def main(config):
         data.run(
             compas_function, mode='cluster',
             kwargs={
-                "slurm_jobid": config.slurm_jobid,
+                "slurm_jobid": config.slurm.jobid,
             }
         )
 
-    # Store the data generation function
-    data.store()
+    # # Store the data generation function
+    # data.store()
 
 
 if __name__ == "__main__":

@@ -19,9 +19,8 @@ design:
 sampler:
   _target_: mfb.sampling.SobolSequence_torch
   seed: 1
-  number_of_samples: 1
+  number_of_samples: 50
 
 slurm:
   arrayid: 0
-
-slurm_jobid: '0'
+  jobid: '0'

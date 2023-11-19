@@ -14,6 +14,8 @@ def compas_function(design: f3dasm.Design, slurm_jobid=0):
     ddy = design.get('ddy')
     rrotz = design.get('rrotz')
 
+    logging.info("job id %s, job number %s, design %s" % (str(slurm_jobid), str(design.job_number), str([ddx, ddy, rrotz])))
+
     output = compas_objective(
         ddx, ddy, rrotz, jobnumber=design.job_number, slurm_jobid=slurm_jobid)
     design.set('acc_nlcr', output)
@@ -51,7 +53,7 @@ def compas_objective(ddx, ddy, rrotz, jobnumber=0, slurm_jobid=0):
     ansys_output_path = work_directory + "/submodell_test.lis"
 
     # The command line
-    cmdl = "ansys232 -dir %s -b -dis -mpi openmpi -np 6 -g -i %s >& ansys_solve.out" % (work_directory, ansys_input_path)
+    cmdl = "ansys232 -dir %s -b -dis -mpi openmpi -np 6 -g -i %s >& %s/ansys_solve.out" % (work_directory, ansys_input_path, work_directory)
 
     # Running the command line
     if socket.gethostname() == 'hp':
