@@ -7,7 +7,7 @@
 #SBATCH -e DHPC_error_%A_%a.txt          			# error file (DHPC environment)
 
 #SBATCH --partition=compute
-#SBATCH --time=100:00:00
+#SBATCH --time=20:00:00
 #SBATCH --nodes=3
 #SBATCH --ntasks-per-node=6
 #SBATCH --cpus-per-task=1

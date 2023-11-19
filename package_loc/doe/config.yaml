@@ -19,7 +19,7 @@ design:
 sampler:
   _target_: mfb.sampling.SobolSequence_torch
   seed: 1
-  number_of_samples: 50
+  number_of_samples: 30
 
 slurm:
   arrayid: 0
