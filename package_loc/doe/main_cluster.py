@@ -16,7 +16,15 @@ def main(config):
 
         # Filling the design space
         sampler = f3dasm.sampling.Sampler.from_yaml(config)
-        data = f3dasm.ExperimentData.from_sampling(sampler)
+        # data = f3dasm.ExperimentData.from_sampling(sampler) # Uncomment this if you want to use the full data set defined in the config
+
+        samples = f3dasm.ExperimentData.from_sampling(sampler)
+
+        # Comment this block if you don't want to filter your doe
+        design = f3dasm.Domain.from_yaml(yaml=config.design)
+        data = f3dasm.ExperimentData(design=design)
+        data.add(samples.data.data.loc[30:100])
+        #
 
         """Block 2: Data Generation"""
 
