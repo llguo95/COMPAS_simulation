@@ -23,7 +23,7 @@ def main(config):
         # Comment this block if you don't want to filter your doe
         design = f3dasm.Domain.from_yaml(yaml=config.design)
         data = f3dasm.ExperimentData(design=design)
-        data.add(samples.data.data.loc[30:100])
+        data.add(samples.data.data.loc[30:100].reset_index(drop=True))
         #
 
         """Block 2: Data Generation"""
