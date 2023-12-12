@@ -14,7 +14,8 @@ def compas_function(design: f3dasm.Design, slurm_jobid=0):
     ddy = design.get('ddy')
     rrotz = design.get('rrotz')
 
-    logging.info("job id %s, job number %s, design %s" % (str(slurm_jobid), str(design.job_number), str([ddx, ddy, rrotz])))
+    logging.info("job id %s, job number %s, design %s" % (
+        str(slurm_jobid), str(design.job_number), str([ddx, ddy, rrotz])))
 
     output = compas_objective(
         ddx, ddy, rrotz, jobnumber=design.job_number, slurm_jobid=slurm_jobid)
@@ -22,10 +23,12 @@ def compas_function(design: f3dasm.Design, slurm_jobid=0):
     return design
 
 
-def compas_objective(ddx, ddy, rrotz, jobnumber=0, slurm_jobid=0):
+def compas_objective(ddx, ddy, rrotz, jobnumber=0, slurm_jobid=0, iteration_number=0,):
     # Resource and work directories
-    resources_directory = str(Path(__file__).parent.parent / "COMPAS10" / "subinput")
-    work_directory = str(Path(__file__).parent.parent / "COMPAS10" / "suboutput" / "outputs" / str(slurm_jobid) / str(jobnumber))
+    resources_directory = str(
+        Path(__file__).parent.parent / "COMPAS10" / "subinput")
+    work_directory = str(Path(__file__).parent.parent / "COMPAS10" /
+                         "suboutput" / "outputs" / str(slurm_jobid) / str(jobnumber))
 
     # Input file
     ansys_input_path_source = resources_directory + "/submodel_run.txt"
@@ -53,7 +56,8 @@ def compas_objective(ddx, ddy, rrotz, jobnumber=0, slurm_jobid=0):
     ansys_output_path = work_directory + "/submodell_test.lis"
 
     # The command line
-    cmdl = "ansys232 -dir %s -b -dis -mpi openmpi -np 6 -g -i %s >& %s/ansys_solve.out" % (work_directory, ansys_input_path, work_directory)
+    cmdl = "ansys232 -dir %s -b -dis -mpi openmpi -np 6 -g -i %s >& %s/ansys_solve.out" % (
+        work_directory, ansys_input_path, work_directory)
 
     # Running the command line
     if socket.gethostname() == 'hp':
