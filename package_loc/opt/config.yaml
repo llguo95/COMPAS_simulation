@@ -43,6 +43,5 @@ hyperparameters:
     budget: 1
 
 slurm:
-  jobid: 0
-
-slurm_jobid: '0'
+  arrayid: 0
+  jobid: '0'

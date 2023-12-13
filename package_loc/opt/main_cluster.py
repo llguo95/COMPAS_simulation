@@ -15,7 +15,7 @@ def main(config):
     logging.info("Main method started.")
     # If it is the first job in the array,
     # first create the designspace, then execute my_function on the designs.
-    if config.slurm.jobid == 0:
+    if int(config.slurm.arrayid) == 0:
         """Block 1: Design of Experiment"""
 
         # Filling the design space
@@ -53,14 +53,14 @@ def main(config):
         data.run(
             compas_opt_function, mode='cluster',
             kwargs={
-                "slurm_jobid": config.slurm_jobid,
+                "slurm_jobid": config.slurm.jobid,
                 "hyperparameters": config.hyperparameters,
             }
         )
 
     # In any other case, the design has already been made
     # Therefore, load it from disk and run my_function on it.
-    elif config.slurm.jobid > 0:
+    elif int(config.slurm.arrayid) > 0:
         # Retrieve the file from disk
         data = None
         while data is None:
@@ -74,7 +74,7 @@ def main(config):
         data.run(
             compas_opt_function, mode='cluster',
             kwargs={
-                "slurm_jobid": config.slurm_jobid,
+                "slurm_jobid": config.slurm.jobid,
                 "hyperparameters": config.hyperparameters,
             }
         )

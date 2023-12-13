@@ -75,7 +75,6 @@ def compas_opt(
         optimization_lf_cost,
         optimization_iterations,
         optimization_budget,
-        optimization_objective_name,
         jobnumber,
         slurm_jobid,
 ):
