@@ -15,7 +15,7 @@ from compas_script import compas_objective  # NOQA
 
 
 def compas_opt_function(design: f3dasm.Design, hyperparameters: dict, slurm_jobid):
-
+    logging.info("Optimization function wrapper started.")
     data_initial_doe = pd.read_csv(
         Path(__file__).parent / "initial_doe_data_res_mf.csv",
         header=[0, 1], index_col=0
@@ -79,6 +79,7 @@ def compas_opt(
         jobnumber,
         slurm_jobid,
 ):
+    logging.info("Optimization function started.")
 
     #######################
     # Parameters: level 1 #

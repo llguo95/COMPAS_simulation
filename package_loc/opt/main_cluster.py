@@ -12,6 +12,7 @@ import pandas as pd
 
 @hydra.main(config_path=".", config_name="config")
 def main(config):
+    logging.info("Main method started.")
     # If it is the first job in the array,
     # first create the designspace, then execute my_function on the designs.
     if config.slurm.jobid == 0:
