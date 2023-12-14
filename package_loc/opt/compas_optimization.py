@@ -31,7 +31,6 @@ def compas_opt_function(design: f3dasm.Design, hyperparameters: dict, slurm_jobi
     data_fidelity_parameter_name = hyperparameters.data.fidelity_parameter_name
     data_low_fidelity_parameter = hyperparameters.data.low_fidelity_parameter
     data_high_fidelity_parameter = hyperparameters.data.high_fidelity_parameter
-    optimization_objective_name = hyperparameters.optimization.objective_name
     optimization_lf_cost = hyperparameters.optimization.lf_cost
     optimization_iterations = hyperparameters.optimization.iterations
     optimization_budget = hyperparameters.optimization.budget
@@ -48,7 +47,6 @@ def compas_opt_function(design: f3dasm.Design, hyperparameters: dict, slurm_jobi
         optimization_lf_cost=optimization_lf_cost,
         optimization_iterations=optimization_iterations,
         optimization_budget=optimization_budget,
-        optimization_objective_name=optimization_objective_name,
         jobnumber=design.job_number,
         slurm_jobid=slurm_jobid,
     )
