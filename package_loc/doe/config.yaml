@@ -10,7 +10,7 @@ design:
       upper_bound: 145.0
     rrotz:
       _target_: f3dasm.CategoricalParameter
-      categories: ["0", "90"]
+      categories: ["0"]
 
   output_space:
     acc_nlcr:
