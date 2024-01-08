@@ -1,0 +1,587 @@
+
+fini
+/clear
+
+RESUME, /scratch/leoguo/GitHub/COMPAS_simulation/package_loc/COMPAS10/subinput/ecu_120723_noQ1_R221,db
+
+/prep7
+
+allsel
+cm,all_elem_full,elem
+cm,all_node_full,node
+
+
+CDOPT,IGES  
+CDREAD,ALL,'/scratch/leoguo/GitHub/COMPAS_simulation/package_loc/COMPAS10/subinput/sub','cdb',,'/scratch/leoguo/GitHub/COMPAS_simulation/package_loc/COMPAS10/subinput/sub','iges'
+
+
+cmsel,s,rand_pcb
+ddele,all,all
+
+allsel
+cmsel,u,boden
+cmsel,u,deckel
+eplot   
+
+
+ddx=15.0
+ddy=130.3026047348976
+rrotz=0.0
+
+
+csys,0
+!local,100,0,30,30,,90
+local,100,0,ddx,ddy,,rrotz
+
+csys,0
+allsel
+cmsel,u,all_elem_full
+cmsel,u,all_node_full
+
+
+transfer,100,,all
+
+cmsel,s,rand_pcb
+nwrite,rand_new,node 
+
+
+
+fini
+/clear
+
+resume,/scratch/leoguo/GitHub/COMPAS_simulation/package_loc/COMPAS10/subinput/done_full_R231,db
+
+/post1
+
+!Interpolation
+FILE,'/scratch/leoguo/GitHub/COMPAS_simulation/package_loc/COMPAS10/subinput/file_full_R231','rst' 
+
+!set,last
+!k=11
+
+allsel
+csys,0
+
+
+
+*do,k,2,11                              !! considering two temperature cycles.
+
+set,k                                   !! load step (7 to 11) 2nd cycle
+
+cmsel,s,pcb
+nsle,s
+
+/nopr                                   !! Suppresses printout of interpreted input data
+                                        !! otherwise in output file it will be written.
+cbdof,rand_new,node,,rand_%k%,cbdo      !! Activates cut-boundary interpolation (for submodelling)
+/gopr                                   !! reactivates suppressed print out 
+                                        
+*enddo
+
+fini
+/clear
+
+
+!run submodell creep
+
+resume,/scratch/leoguo/GitHub/COMPAS_simulation/package_loc/COMPAS10/subinput/sub_120723,db
+
+/Prep7
+allsel
+
+fdele,all,all
+bfdele,all,all
+bfedele,all,all,all
+
+!new materials
+
+esel,s,enam,,170,175
+nr=elnext(0)
+*get,mpc1,elem,nr,attr,mat
+
+mpdele,all,1,mpc1-1	!delete all Materials from WB model
+tbdele,all,1,mpc1-1  	!delete all Materials from WB model
+
+!Materials Niessner  **************************************************
+
+!####################################################  Begin materials definition ###############################################################
+
+!Silizium
+mn_di = 4010
+!- Mold_Compound(EMEG700H-Sumitomo, visk_IFX_CRAPP2)
+mn_mc = 4030
+!- Copper alloy
+mn_cu = 4040
+!- Solder_inside Package
+mn_da = 4071
+!- Solder_SAC_creep for PCB
+mn_sac = 4072
+!- PCB Prepreg only from MEG z-Vertical for layered elements
+mat_prepreg_R1566_weft_z = 4096
+
+/com,--- Data in consistent NMM units. See Solving Units in the help system for more information.
+/units,MPA
+
+/com,*********** Send User Defined Coordinate System(s) ***********
+csys,0
+toffst,0  ! in Kelvin everything, Temperature offset from absolute zero
+!/com,*********** Set Reference Temperature ***********
+t_offst = 273
+
+/com,*********** Send Materials ***********
+
+!-------
+!Molding compound polymer
+!linear-visco-elastic (Prony series)
+!-------
+
+MP,EX,mn_mc,32000,	! tonne s^-2 mm^-1
+MP,NUXY,mn_mc,0.3,
+MPTEMP,,,,,,,,
+MPTEMP,1,-55 + t_offst
+MPTEMP,2,100 + t_offst
+MPTEMP,3,110 + t_offst
+MPTEMP,4,260 + t_offst
+MPDATA,CTEX,mn_mc, ,6e-06,6e-06,3e-05,3e-05,	! C^-1
+MPTEMP,,,,,,,,
+MP,DENS,mn_mc,2e-09,	! tonne mm^-3
+MP,KXX,mn_mc,0.9,	! tonne mm s^-3 C^-1
+MP,C,mn_mc,900000000,	! mm^2 s^-2 C^-1
+
+TB,PRONY,mn_mc,1,6,BULK
+TBDATA,1,0.009,159000,0.06,7.96e-06,0.06,0.000239
+TBDATA,7,0.075,0.0207,0.045,1.11,0.0135,95.5
+
+TB,PRONY,mn_mc,1,6,SHEAR
+TBDATA,1,0.03,159000,0.2,7.96e-06,0.2,0.000239
+TBDATA,7,0.25,0.0207,0.15,1.11,0.045,95.5
+
+TB,SHIFT,mn_mc,1,3,WLF
+TBDATA,1,100 + t_offst,130.5456,1115.34
+
+!-------
+!Silicon
+!linear-elastic: constant
+!-------
+
+MP,EX,mn_di,169000,	! tonne s^-2 mm^-1
+MP,NUXY,mn_di,0.34,
+MP,ALPX,mn_di,3e-06,	! C^-1
+MP,C,mn_di,700000000,	! mm^2 s^-2 C^-1
+MP,KXX,mn_di,150,	! tonne mm s^-3 C^-1
+MP,DENS,mn_di,2.3e-09,	! tonne mm^-3
+
+!-------
+!Chip to copper diepad attach material: Solder 
+!Garofalo Creep model
+!-------
+
+Temperature = 'TEMP' ! Temperature
+MPTEMP,,,,,,,,
+MPTEMP,1,-55 + t_offst
+MPTEMP,2,260 + t_offst
+MPDATA,EX,mn_da, ,20000,10000,	! tonne s^-2 mm^-1
+MPTEMP,,,,,,,,
+MPTEMP,,,,,,,,
+MPTEMP,1,-55 + t_offst
+MPTEMP,2,260 + t_offst
+MPDATA,NUXY,mn_da, ,0.4,0.4,
+MPTEMP,,,,,,,,
+MP,ALPX,mn_da,2.8e-05,	! C^-1
+MP,C,mn_da,120000000,	! mm^2 s^-2 C^-1
+MP,KXX,mn_da,44,	! tonne mm s^-3 C^-1
+MP,DENS,mn_da,1.132e-08,	! tonne mm^-3
+
+TB,CREEP,mn_da,1,4,8
+TBDATA,1,68000,0.073,6.05,8035
+
+!-------
+!Copper material
+!linear-elastic
+!-------
+
+MP,EX,mn_cu,130000,	! tonne s^-2 mm^-1
+MP,NUXY,mn_cu,0.34,
+MP,ALPX,mn_cu,1.7e-05,	! C^-1
+MP,DENS,mn_cu,8.88e-09,	! tonne mm^-3
+MP,KXX,mn_cu,310,	! tonne mm s^-3 C^-1
+MP,C,mn_cu,385000000,	! mm^2 s^-2 C^-1
+
+!-------
+!SAC solder between package and PCB
+!Garofalo Creep model
+!-------
+
+Temperature = 'TEMP' ! Temperature
+MPTEMP,,,,,,,,
+MPTEMP,1,-55 + t_offst
+MPTEMP,2,218 + t_offst
+MPDATA,EX,mn_sac, ,48500,33000,	! tonne s^-2 mm^-1
+MPTEMP,,,,,,,,
+MPTEMP,,,,,,,,
+MPTEMP,1,-55 + t_offst
+MPTEMP,2,218 + t_offst
+MPDATA,NUXY,mn_sac, ,0.34,0.34,
+MPTEMP,,,,,,,,
+MP,ALPX,mn_sac,2.1e-05,	! C^-1
+MP,KXX,mn_sac,60,	! tonne mm s^-3 C^-1
+MP,DENS,mn_sac,7.4e-09,	! tonne mm^-3
+MP,C,mn_sac,230000000,	! mm^2 s^-2 C^-1
+
+TB,CREEP,mn_sac,1,4,8
+TBDATA,1,277984,0.02447,6.41,6500
+
+!-------
+!FR4 epoxy of PCB
+!linear-elastic: constant
+!-------
+
+MP,ALPX,mat_prepreg_R1566_weft_z,1.6e-05,	! C^-1
+MP,EX,mat_prepreg_R1566_weft_z,26000,	! tonne s^-2 mm^-1
+MP,NUXY,mat_prepreg_R1566_weft_z,0.2,
+MP,KXX,mat_prepreg_R1566_weft_z,0.42,	! tonne mm s^-3 C^-1
+MP,C,mat_prepreg_R1566_weft_z,1100000000,	! mm^2 s^-2 C^-1
+MP,DENS,mat_prepreg_R1566_weft_z,1.8e-09,	! tonne mm^-3
+
+
+!prepreg
+
+!PCB-cu
+!mn_cu = 4040     			!weiteroben definiert, war 1324 im WB Modell
+
+CMSEL,S,Copper
+emodif,all,mat,mn_cu
+
+CMSEL,S,MAT_PCB
+emodif,all,mat,mat_prepreg_R1566_weft_z 
+
+CMSEL,S,MAT_PCB_SOLDER  
+emodif,all,mat,mn_sac
+
+CMSEL,S,MAT_DIEATTACH   
+emodif,all,mat,mn_da
+
+CMSEL,S,MAT_LEADFRAME   
+emodif,all,mat,mn_cu
+
+CMSEL,S,MAT_MOLD
+emodif,all,mat,mn_mc
+
+CMSEL,S,MAT_SILICON 
+emodif,all,mat,mn_di
+
+
+!Fixation
+CMSEL,S,Rand_PCB
+ddele,all,all
+
+
+
+save,ready,db
+
+/solu
+
+! ********* Analysis Options ****************************
+!
+
+esel,s,mat,,mn_sac
+cm,e_solder,elem
+nsle
+cm,n_solder,node
+allsel
+
+!
+
+
+toffst,0                              ! Tempertur in [K] , kein offset !
+tunif,297
+tref,297
+allsel
+antype,static,new
+
+outres,erase
+outres,all,last
+outres,esol,all,e_solder
+outres,nsol,all    !,n_solder
+!outres,svar,all,e_solder
+
+resc,noresta
+
+allsel
+
+!rescontrol,define,all,last
+dmpopt,rnnn,yes
+
+
+nlgeom,on
+!nlgeom,off
+solc,on 
+nropt,full
+!nropt,UNSYM
+!timint,off
+pred,off
+!rate,off
+
+cutcon,vslimit,5e-3,on  !source IFX
+CUTCON,CRPLIM,15,ON     !source IFX
+
+
+kbc,0
+
+cntr,print,1               ! print out contact info and also make no initial contact an error   
+nldiag,cont,iter           ! print out contact info each equilibrium iteration  
+Nldiag,nrre,on  
+Nldiag,maxf,50
+
+ncnv,0
+neqit,30
+
+eqslv,dsparse
+dspoption,,incore,,,,
+
+allsel
+
+!cnch,trim
+!CNCH,DMP   !**** Jan 2020
+
+cnvtol,f,,,2,10/5E-3 
+
+!-- 1LS ------------------------------------------------
+/title, init
+
+bf, all, TEMP, 24+273
+
+!load BC
+/nopr
+/input,rand_2,cbdo
+/gopr
+
+
+autots,off
+time,1
+deltim,1
+allsel
+
+solve
+save,LS1,db
+
+
+! run niessner
+
+t0=1
+
+
+autots,on
+
+!
+! ********* Initial conditions *************************
+!
+  tmpmin = -40+273              ! min. temperature
+  tmpmax = 125+273              ! max. temperature
+  tramp = 15*60                 ! ramp time
+  tdwel = 15*60                 ! dwell time
+  ncycle = 2                   ! number of cycles
+  !
+  toffset,0
+   tref,25+273		!leadfree solder
+   RATE,on
+!
+
+!
+! ********* Solving temperature cycles ******************
+!
+
+
+! ********* Solving temperature cycles ******************
+!
+
+allsel
+
+ii3 = 0.0
+ii4 = 0.0
+*do,ii2,1,ncycle,1
+      ! --------- 1. part of thermal cycle --------------
+        ii3 = ii3 + 1.0
+        ii4 = ii4 + 0.0
+        time,t0+ii3*tramp+ii4*tdwel    ! heating up
+/nopr
+/input,rand_%3+ii3+ii4%,cbdo
+/gopr
+
+        bfe,all,temp,,tmpmax
+        KBC,0                       ! Ramped load
+	deltim,30,1e-3,90
+        solve
+      ! --------- 2. part of thermal cycle --------------
+        ii3 = ii3 + 0.0
+        ii4 = ii4 + 1.0
+        time,t0+ii3*tramp+ii4*tdwel    ! dwelling
+/nopr
+/input,rand_%3+ii3+ii4%,cbdo
+/gopr
+
+        bfe,all,temp,,tmpmax
+        KBC,1                       !  Stepped load
+	deltim,60,1e-3,240
+        solve
+      ! --------- 3. part of thermal cycle --------------
+        ii3 = ii3 + 1.0
+        ii4 = ii4 + 0.0
+        time,t0+ii3*tramp+ii4*tdwel   	! Cooling down
+/nopr
+/input,rand_%3+ii3+ii4%,cbdo
+/gopr
+        bfe,all,temp,,tmpmin
+        KBC,0                       ! Ramped load
+	deltim,30,1e-3,90
+        solve
+      ! --------- 4. part of thermal cycle  --------------
+        ii3 = ii3 + 0.0
+        ii4 = ii4 + 1.0
+        time,t0+ii3*tramp+ii4*tdwel    ! dwelling
+/nopr
+/input,rand_%3+ii3+ii4%,cbdo
+/gopr
+
+        bfe,all,temp,,tmpmin
+        KBC,1                       ! Stepped loads
+	deltim,60,1e-3,240
+        solve
+*enddo
+
+fini
+save,done_creep,db
+
+
+!predefined components
+
+esel,s,type,,19,26,7
+esel,a,type,,32,36,4
+esel,a,type,,39
+CM,soldervol_1,elem
+
+
+
+esel,s,type,,18,25,7
+esel,a,type,,31,35,4
+CM,soldervol_2,elem
+
+esel,s,type,,20,27,7
+CM,soldervol_3,elem
+
+
+CMSEL,S,E_SOLDER
+
+cm,eval,elem
+nsle,s
+cm,eval_nodes,node
+
+
+csys,0
+
+
+/post1
+
+ETABLE,ERASE
+
+cmsel,s,eval
+nsle,s
+subset,last
+*get,LS_,active,0,set,lstp
+avprin,0,.5
+
+
+etable,volu_1,volu
+etable,nlcreq1,nl,creq
+etable,ener1,send,creep
+
+subset,LS_-4                ! choose whatever SET you are interested in
+
+etable,nlcreq2,nl,creq
+etable,ener2,send,creep
+
+sadd,def_acc1,nlcreq1,nlcreq2,1,-1
+sadd,def_ene1,ener1,ener2,1,-1
+
+smult,vwa_acc1,def_acc1,volu_1,,1
+smult,vwa_ene1,def_ene1,volu_1,,1
+
+
+cmsel,s,eval
+nsle,s
+
+/show,png
+
+/Title, cycle 2
+
+/GRESUME,'/scratch/leoguo/GitHub/COMPAS_simulation/package_loc/COMPAS10/subinput/view_single',' ',' '  
+pletab,def_acc1,avg 
+!/UI,COPY,SAVE,PNG,GRAPH,COLOR,REVERSE,PORTRAIT,YES,100
+
+
+
+
+
+*del,VWA_results
+*dim,VWA_results,array,3,4,1
+
+
+csys,0
+
+*do,i,1,3
+cmsel,s,soldervol_%i%
+*get,anz,elem,,count
+
+accu_x=0
+accu_y=0
+accu_z=0
+
+*do,k,1,anz
+*get,nr,elem,,num,min
+
+*get,px,elem,nr,cent,x
+*get,py,elem,nr,cent,y
+!*get,pz,elem,nr,cent,z
+
+accu_x=accu_x+px
+accu_y=accu_y+py
+!accu_z=accu_z+pz
+
+esel,u,elem,,nr
+
+*enddo  !k
+
+VWA_results(i,1,1)= accu_x/anz
+VWA_results(i,2,1)= accu_y/anz
+
+cmsel,s,soldervol_%i%
+nsle,s
+
+ssum
+
+*get,sum_volu,SSUM,0,ITEM,volu_1
+*get,sum_acc1,SSUM,0,ITEM,vwa_acc1
+*get,sum_ene1,SSUM,0,ITEM,vwa_ene1
+
+acc_nlcr=sum_acc1/sum_volu
+acc_ener=sum_ene1/sum_volu
+
+VWA_results(i,3,1)= acc_nlcr
+VWA_results(i,4,1)= acc_ener
+
+*enddo
+
+
+*CFOPEN,submodell_test,lis   ! Output filename
+
+*VWRITE  
+('  k_x              k_y           acc_nlcr          acc_ene')
+*VWRITE,VWA_results(1,1),VWA_results(1,2),VWA_results(1,3),VWA_results(1,4)
+(4E15.7)
+*CFCLOSE
+
+
+
+
+
+

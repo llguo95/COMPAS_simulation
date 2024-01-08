@@ -1,0 +1,35 @@
+design:
+  input_space:
+    regression_type:
+      _target_: f3dasm.CategoricalParameter
+      categories:
+      - Sogpr
+    regression_covar_base_name:
+      _target_: f3dasm.CategoricalParameter
+      categories:
+      - RBFKernel
+    optimization_acquisition_type:
+      _target_: f3dasm.CategoricalParameter
+      categories:
+      - UpperConfidenceBound
+  output_space:
+    ddx_rec:
+      _target_: f3dasm.ContinuousParameter
+    ddy_rec:
+      _target_: f3dasm.ContinuousParameter
+    acc_nlcr_rec:
+      _target_: f3dasm.ContinuousParameter
+hyperparameters:
+  data:
+    fidelity_parameter_name: res
+    low_fidelity_parameter: 20
+    high_fidelity_parameter: 30
+    dimensionality: 2
+  optimization:
+    objective_name: EA
+    lf_cost: 0.16
+    iterations: 25
+    budget: 25
+slurm:
+  arrayid: 0
+  jobid: 2941628

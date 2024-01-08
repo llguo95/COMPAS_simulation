@@ -1,0 +1,9 @@
+2023-12-23 03:06:25,709 - Imported f3dasm (version: 1.2.0)
+main_cluster.py:13: UserWarning: 
+The version_base parameter is not specified.
+Please specify a compatability version level, or None.
+Will assume defaults for version 1.1
+  @hydra.main(config_path=".", config_name="config")
+/scratch/leoguo/miniconda3/envs/compas_env/lib/python3.8/site-packages/hydra/_internal/hydra.py:119: UserWarning: Future Hydra versions will no longer change working directory at job runtime by default.
+See https://hydra.cc/docs/1.2/upgrades/1.1_to_1.2/changes_to_job_working_dir/ for more information.
+  ret = run_job(

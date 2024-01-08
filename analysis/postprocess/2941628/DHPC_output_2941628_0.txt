@@ -1,0 +1,83 @@
+myjobid =  2941628
+[2023-12-23 03:08:28,573][root][INFO] - Main method started.
+[2023-12-23 03:08:29,460][root][INFO] - Optimization function wrapper started.
+[2023-12-23 03:08:29,483][root][INFO] - Optimization function started.
+
+[2023-12-23 03:08:29,499][root][INFO] - job 0 iteration 1 / 25
+[2023-12-23 03:08:30,493][root][INFO] - x (unscaled) at f3dasm.Function __call__ = [[67.01118201 20.        ]]
+
+[2023-12-23 04:26:25,262][root][INFO] - job 0 iteration 2 / 25
+[2023-12-23 04:26:25,801][root][INFO] - x (unscaled) at f3dasm.Function __call__ = [[125.19879937  56.83405742]]
+
+[2023-12-23 05:43:09,021][root][INFO] - job 0 iteration 3 / 25
+[2023-12-23 05:43:09,694][root][INFO] - x (unscaled) at f3dasm.Function __call__ = [[67.87952542 20.        ]]
+
+[2023-12-23 07:09:01,245][root][INFO] - job 0 iteration 4 / 25
+[2023-12-23 07:09:01,793][root][INFO] - x (unscaled) at f3dasm.Function __call__ = [[ 95.80284357 145.        ]]
+
+[2023-12-23 09:06:03,168][root][INFO] - job 0 iteration 5 / 25
+[2023-12-23 09:06:04,258][root][INFO] - x (unscaled) at f3dasm.Function __call__ = [[ 98.86089981 145.        ]]
+
+[2023-12-23 11:28:19,141][root][INFO] - job 0 iteration 6 / 25
+[2023-12-23 11:28:19,820][root][INFO] - x (unscaled) at f3dasm.Function __call__ = [[67.93951124 20.        ]]
+
+[2023-12-23 13:29:07,280][root][INFO] - job 0 iteration 7 / 25
+[2023-12-23 13:29:08,297][root][INFO] - x (unscaled) at f3dasm.Function __call__ = [[67.92246819 20.        ]]
+
+[2023-12-23 15:31:09,469][root][INFO] - job 0 iteration 8 / 25
+[2023-12-23 15:31:10,070][root][INFO] - x (unscaled) at f3dasm.Function __call__ = [[123.61630201  58.23348135]]
+
+[2023-12-23 17:28:55,292][root][INFO] - job 0 iteration 9 / 25
+[2023-12-23 17:28:55,861][root][INFO] - x (unscaled) at f3dasm.Function __call__ = [[ 15.         128.55132341]]
+
+[2023-12-23 20:05:42,032][root][INFO] - job 0 iteration 10 / 25
+[2023-12-23 20:05:42,634][root][INFO] - x (unscaled) at f3dasm.Function __call__ = [[145.         114.21662241]]
+
+[2023-12-23 22:27:28,605][root][INFO] - job 0 iteration 11 / 25
+[2023-12-23 22:27:29,435][root][INFO] - x (unscaled) at f3dasm.Function __call__ = [[40.97895905 89.64153796]]
+
+[2023-12-24 00:44:59,992][root][INFO] - job 0 iteration 12 / 25
+[2023-12-24 00:45:00,725][root][INFO] - x (unscaled) at f3dasm.Function __call__ = [[68.00779581 20.        ]]
+
+[2023-12-24 02:35:39,489][root][INFO] - job 0 iteration 13 / 25
+[2023-12-24 02:35:41,590][root][INFO] - x (unscaled) at f3dasm.Function __call__ = [[67.97211349 20.        ]]
+
+[2023-12-24 04:22:55,816][root][INFO] - job 0 iteration 14 / 25
+[2023-12-24 04:22:57,083][root][INFO] - x (unscaled) at f3dasm.Function __call__ = [[145.         106.75116301]]
+[2023-12-24 06:38:38,036][root][INFO] - New optimum found.
+
+[2023-12-24 06:38:40,617][root][INFO] - job 0 iteration 15 / 25
+[2023-12-24 06:38:41,093][root][INFO] - x (unscaled) at f3dasm.Function __call__ = [[93.52355301 95.53803176]]
+
+[2023-12-24 08:37:03,346][root][INFO] - job 0 iteration 16 / 25
+[2023-12-24 08:37:05,279][root][INFO] - x (unscaled) at f3dasm.Function __call__ = [[101.53971612 121.32019967]]
+
+[2023-12-24 10:50:30,042][root][INFO] - job 0 iteration 17 / 25
+[2023-12-24 10:50:30,727][root][INFO] - x (unscaled) at f3dasm.Function __call__ = [[67.95379192 20.        ]]
+
+[2023-12-24 12:23:11,662][root][INFO] - job 0 iteration 18 / 25
+[2023-12-24 12:23:12,336][root][INFO] - x (unscaled) at f3dasm.Function __call__ = [[67.91414618 20.        ]]
+
+[2023-12-24 13:49:00,611][root][INFO] - job 0 iteration 19 / 25
+[2023-12-24 13:49:01,180][root][INFO] - x (unscaled) at f3dasm.Function __call__ = [[ 15.         130.44798046]]
+
+[2023-12-24 15:52:00,335][root][INFO] - job 0 iteration 20 / 25
+[2023-12-24 15:52:00,922][root][INFO] - x (unscaled) at f3dasm.Function __call__ = [[ 15.         130.25353521]]
+
+[2023-12-24 17:49:51,575][root][INFO] - job 0 iteration 21 / 25
+[2023-12-24 17:49:52,140][root][INFO] - x (unscaled) at f3dasm.Function __call__ = [[102.51425803 145.        ]]
+
+[2023-12-24 19:39:18,319][root][INFO] - job 0 iteration 22 / 25
+[2023-12-24 19:39:18,890][root][INFO] - x (unscaled) at f3dasm.Function __call__ = [[ 15.         130.23757607]]
+
+[2023-12-24 21:42:10,826][root][INFO] - job 0 iteration 23 / 25
+[2023-12-24 21:42:11,498][root][INFO] - x (unscaled) at f3dasm.Function __call__ = [[101.6194725 145.       ]]
+
+[2023-12-24 23:42:44,881][root][INFO] - job 0 iteration 24 / 25
+[2023-12-24 23:42:45,520][root][INFO] - x (unscaled) at f3dasm.Function __call__ = [[ 15.         130.30046642]]
+
+[2023-12-25 01:50:28,652][root][INFO] - job 0 iteration 25 / 25
+[2023-12-25 01:50:29,349][root][INFO] - x (unscaled) at f3dasm.Function __call__ = [[ 15.         130.30260473]]
+[2023-12-25 03:58:25,719][root][INFO] - job 0 (unscaled) improvement quantities = [4.066400000000015e-05]
+[2023-12-25 03:58:26,141][root][INFO] - job 0 optimization time = 175796.220
+[2023-12-25 03:58:26,310][f3dasm][INFO] - An unexpected error occurred: No open jobs found.
