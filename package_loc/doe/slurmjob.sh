@@ -7,13 +7,13 @@
 #SBATCH -e DHPC_error_%A_%a.txt          			# error file (DHPC environment)
 
 #SBATCH --partition=compute
-#SBATCH --time=40:00:00
-#SBATCH --nodes=3
+#SBATCH --time=60:00:00
+#SBATCH --nodes=4
 #SBATCH --ntasks-per-node=6
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=0
 #SBATCH --account=research-eemcs-me
-#SBATCH --array=0-2
+#SBATCH --array=0-3
 
 conda activate compas_env
 
