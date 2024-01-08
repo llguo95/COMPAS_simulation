@@ -17,7 +17,8 @@ from compas_script import compas_objective  # NOQA
 def compas_opt_function(design: f3dasm.Design, hyperparameters: dict, slurm_jobid):
     logging.info("Optimization function wrapper started.")
     data_initial_doe = pd.read_csv(
-        Path(__file__).parent / "initial_doe_data_res_mf.csv",
+        # Path(__file__).parent / "initial_doe_data_res_mf.csv",
+        Path(__file__).parent / "doe_data_seed2.csv",
         header=[0, 1], index_col=0
     )
 
@@ -31,6 +32,7 @@ def compas_opt_function(design: f3dasm.Design, hyperparameters: dict, slurm_jobi
     data_fidelity_parameter_name = hyperparameters.data.fidelity_parameter_name
     data_low_fidelity_parameter = hyperparameters.data.low_fidelity_parameter
     data_high_fidelity_parameter = hyperparameters.data.high_fidelity_parameter
+    data_initial_doe_size_hf = hyperparameters.data.data_initial_doe_size_hf
     optimization_lf_cost = hyperparameters.optimization.lf_cost
     optimization_iterations = hyperparameters.optimization.iterations
     optimization_budget = hyperparameters.optimization.budget
@@ -41,6 +43,7 @@ def compas_opt_function(design: f3dasm.Design, hyperparameters: dict, slurm_jobi
         data_fidelity_parameter_name=data_fidelity_parameter_name,
         data_low_fidelity_parameter=data_low_fidelity_parameter,
         data_high_fidelity_parameter=data_high_fidelity_parameter,
+        data_initial_doe_size_hf=data_initial_doe_size_hf,
         regression_type=regression_type,
         regression_covar_base_name=regression_covar_base_name,
         optimization_acquisition_type=optimization_acquisition_type,
@@ -67,6 +70,7 @@ def compas_opt(
         data_fidelity_parameter_name,
         data_low_fidelity_parameter,
         data_high_fidelity_parameter,
+        data_initial_doe_size_hf,
         regression_type,
         regression_covar_base_name,
         optimization_acquisition_type,
@@ -213,8 +217,19 @@ def compas_opt(
         #     data_initial_doe.input[data_fidelity_parameter_name] == fidelity_parameter
         # ].drop(data_fidelity_parameter_name, axis=1).values
 
-        output_arr = data_initial_doe.output.values
-        input_arr = data_initial_doe.input.values
+        if 'rrotz' in data_initial_doe.input.columns:
+            df_input = data_initial_doe.input.drop(
+                columns=['rrotz']
+            )
+        else:
+            df_input = data_initial_doe.input
+
+        if data_initial_doe_size_hf is not None:
+            output_arr = data_initial_doe.output.values[:data_initial_doe_size_hf]
+            input_arr = df_input.values[:data_initial_doe_size_hf]
+        else:
+            output_arr = data_initial_doe.output.values
+            input_arr = df_input.values
 
         # Scale the input data
         lower, upper = bounds.T

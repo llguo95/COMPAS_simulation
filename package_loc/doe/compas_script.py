@@ -28,7 +28,7 @@ def compas_objective(ddx, ddy, rrotz, jobnumber=0, slurm_jobid=0, iteration_numb
     resources_directory = str(
         Path(__file__).parent.parent / "COMPAS10" / "subinput")
     work_directory = str(Path(__file__).parent.parent / "COMPAS10" /
-                         "suboutput" / "outputs" / str(slurm_jobid) / str(jobnumber))
+                         "suboutput" / "outputs" / str(slurm_jobid) / str(jobnumber) / str(iteration_number))
 
     # Input file
     ansys_input_path_source = resources_directory + "/submodel_run.txt"
