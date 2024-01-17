@@ -12,22 +12,29 @@ from pathlib import Path
 def compas_function(design: f3dasm.Design, slurm_jobid=0):
     ddx = design.get('ddx')
     ddy = design.get('ddy')
-    rrotz = design.get('rrotz')
+    CTE1 = design.get('CTE1')
+    CTE2 = design.get('CTE2')
 
     logging.info("job id %s, job number %s, design %s" % (
-        str(slurm_jobid), str(design.job_number), str([ddx, ddy, rrotz])))
+        str(slurm_jobid), str(design.job_number), str([ddx, ddy, CTE1, CTE2])))
 
     output = compas_objective(
-        ddx, ddy, rrotz, jobnumber=design.job_number, slurm_jobid=slurm_jobid)
+        ddx=ddx,
+        ddy=ddy,
+        CTE1=CTE1,
+        CTE2=CTE2,
+        jobnumber=design.job_number,
+        slurm_jobid=slurm_jobid
+    )
     design.set('acc_nlcr', output)
     return design
 
 
-def compas_objective(ddx, ddy, rrotz, jobnumber=0, slurm_jobid=0, iteration_number=0,):
+def compas_objective(ddx, ddy, CTE1, CTE2, rrotz=0., jobnumber=0, slurm_jobid=0, iteration_number=0,):
     # Resource and work directories
     resources_directory = str(
-        Path(__file__).parent.parent / "COMPAS10" / "subinput")
-    work_directory = str(Path(__file__).parent.parent / "COMPAS10" /
+        Path(__file__).parent.parent.parent / "COMPAS10" / "subinput")
+    work_directory = str(Path(__file__).parent.parent.parent / "COMPAS10" /
                          "suboutput" / "outputs" / str(slurm_jobid) / str(jobnumber) / str(iteration_number))
 
     # Input file
@@ -42,6 +49,9 @@ def compas_objective(ddx, ddy, rrotz, jobnumber=0, slurm_jobid=0, iteration_numb
             print('ddy=' + str(ddy), end='\n')
         elif "rrotz=" in line:  # rrotz
             print('rrotz=' + str(rrotz), end='\n')
+        elif "MPDATA,CTEX" in line:  # CTE1 & CTE2
+            print('MPDATA,CTEX,mn_mc, ,%e,%e,%e,%e,	! C^-1' %
+                  (CTE1, CTE1, CTE2, CTE2), end='\n')
         elif "../subinput" in line:
             line = line.replace("../subinput", resources_directory)
             line = line.replace(",'.'", '')

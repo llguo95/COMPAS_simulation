@@ -8,9 +8,14 @@ design:
       _target_: f3dasm.ContinuousParameter
       lower_bound: 20.0
       upper_bound: 145.0
-    rrotz:
-      _target_: f3dasm.CategoricalParameter
-      categories: ["0"]
+    CTE1:
+      _target_: f3dasm.ContinuousParameter
+      lower_bound: 5.0e-06
+      upper_bound: 12.0e-06
+    CTE2:
+      _target_: f3dasm.ContinuousParameter
+      lower_bound: 20.0e-06
+      upper_bound: 37.0e-06
 
   output_space:
     acc_nlcr:
@@ -18,8 +23,8 @@ design:
 
 sampler:
   _target_: mfb.sampling.SobolSequence_torch
-  seed: 1
-  number_of_samples: 200
+  seed: 0
+  number_of_samples: 512
 
 slurm:
   arrayid: 0

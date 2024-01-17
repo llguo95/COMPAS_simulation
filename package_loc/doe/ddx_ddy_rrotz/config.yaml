@@ -1,0 +1,26 @@
+design:
+  input_space:
+    ddx:
+      _target_: f3dasm.ContinuousParameter
+      lower_bound: 15.0
+      upper_bound: 145.0
+    ddy:
+      _target_: f3dasm.ContinuousParameter
+      lower_bound: 20.0
+      upper_bound: 145.0
+    rrotz:
+      _target_: f3dasm.CategoricalParameter
+      categories: ["0"]
+
+  output_space:
+    acc_nlcr:
+      _target_: f3dasm.ContinuousParameter
+
+sampler:
+  _target_: mfb.sampling.SobolSequence_torch
+  seed: 0
+  number_of_samples: 1
+
+slurm:
+  arrayid: 0
+  jobid: '0'

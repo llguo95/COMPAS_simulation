@@ -16,7 +16,8 @@ def main(config):
 
         # Filling the design space
         sampler = f3dasm.sampling.Sampler.from_yaml(config)
-        data = f3dasm.ExperimentData.from_sampling(sampler) # Uncomment this if you want to use the full data set defined in the config
+        # Uncomment this if you want to use the full data set defined in the config
+        data = f3dasm.ExperimentData.from_sampling(sampler)
 
         # samples = f3dasm.ExperimentData.from_sampling(sampler)
 
