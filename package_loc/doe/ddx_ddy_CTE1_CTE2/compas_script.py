@@ -77,6 +77,7 @@ def compas_objective(ddx, ddy, CTE1, CTE2, rrotz=0., jobnumber=0, slurm_jobid=0,
 
     # Reading the output
     if os.path.exists(ansys_output_path):
+        logging.error("Output found.")
         output = pd.read_csv(ansys_output_path, sep='\s+').acc_nlcr.iloc[-1]
     else:
         logging.error("No output found.")
