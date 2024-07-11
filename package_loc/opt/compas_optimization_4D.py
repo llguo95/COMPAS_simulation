@@ -60,6 +60,8 @@ def compas_opt_function(design: f3dasm.Design, hyperparameters: dict, slurm_jobi
 
     design.set('ddx_rec', x_rec[0])
     design.set('ddy_rec', x_rec[1])
+    design.set('CTE_1_rec', x_rec[2])
+    design.set('CTE_2_rec', x_rec[3])
     design.set('acc_nlcr_rec', y_rec)
 
     return design

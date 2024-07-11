@@ -45,9 +45,9 @@ def main(config):
 
         data.add(data=df_input.reset_index(drop=True))
 
-        # # Save input data
-        # input_data = data.get_input_data()
-        # input_data.to_csv('input.csv')
+        # Save input data
+        input_data = data.get_input_data()
+        input_data.to_csv('input.csv')
 
         """Block 2: Data Generation"""
 
