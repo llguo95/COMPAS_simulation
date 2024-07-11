@@ -10,7 +10,7 @@ import torch
 import sys
 from pathlib import Path
 
-sys.path.insert(0, os.path.abspath(Path(__file__).parent.parent / "doe"))  # NOQA
+sys.path.insert(0, os.path.abspath(Path(__file__).parent.parent / "doe" / "ddx_ddy_CTE1_CTE2"))  # NOQA
 from compas_script import compas_objective  # NOQA
 
 
@@ -18,7 +18,8 @@ def compas_opt_function(design: f3dasm.Design, hyperparameters: dict, slurm_jobi
     logging.info("Optimization function wrapper started.")
     data_initial_doe = pd.read_csv(
         # Path(__file__).parent / "initial_doe_data_res_mf.csv",
-        Path(__file__).parent / "doe_data_seed2.csv",
+        # Path(__file__).parent / "doe_data_seed2.csv",
+        Path(__file__).parent / "doe_data_4D.csv",
         header=[0, 1], index_col=0
     )
 
@@ -301,6 +302,8 @@ class CompasFunction(f3dasm.Function):
             [
                 [15., 145.],
                 [20., 145.],
+                [5e-6, 12e-6],
+                [20e-6, 37e-6],
             ]
         )
 
@@ -314,6 +317,8 @@ class CompasFunction(f3dasm.Function):
             output = compas_objective(
                 ddx=input_x[0, 0],
                 ddy=input_x[0, 1],
+                CTE1=input_x[0, 2],
+                CTE2=input_x[0, 3],
                 rrotz=self.rrotz,
                 jobnumber=self.jobnumber,
                 iteration_number=self.iteration_number,
