@@ -96,7 +96,7 @@ def num_to_surrogate(regression_type, train_size_lf, train_size_hf):
         likelihood=regression_likelihood_class(),
         kernel=regression_covar,
         mean=regression_mean,
-        noise_fix=regression_noise_fix,
+        # noise_fix=regression_noise_fix,
         opt_algo=regression_opt_class,
         opt_algo_kwargs=regression_opt_kwargs,
         training_iter=regression_training_iter,
