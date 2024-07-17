@@ -21,7 +21,7 @@ def compas_opt_function(design: f3dasm.Design, hyperparameters: dict, slurm_jobi
         # Path(__file__).parent / "doe_data_seed2.csv",
         Path(__file__).parent / "doe_data_4D.csv",
         header=[0, 1], index_col=0
-    )
+    ).dropna()
 
     # design
     regression_type = design.get('regression_type')
@@ -121,11 +121,8 @@ def compas_opt(
         mfb.machinelearning.gpr, regression_type + '_Parameters'
     )
     regressor_class = getattr(mfb.machinelearning.gpr, regression_type)
-    regression_noise_fix = False  # not (data_aug_type == 'noise')
 
     if regression_type in ["Cokgj", "Cokgd"]:
-        if regression_type == "Cokgj":
-            regression_noise_fix = 0
         # Note: no fidelity mixture
         regression_mean = torch.nn.ModuleList([
             regression_mean_base_class(),
