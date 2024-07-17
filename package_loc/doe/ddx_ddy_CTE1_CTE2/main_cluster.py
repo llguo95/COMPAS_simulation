@@ -43,6 +43,7 @@ def main(config):
     # In any other case, the design has already been made
     # Therefore, load it from disk and run my_function on it.
     elif int(config.slurm.arrayid) > 0:
+        time.sleep(int(config.slurm.arrayid))
         # Retrieve the file from disk
         data = None
         while data is None:
