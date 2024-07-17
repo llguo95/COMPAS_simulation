@@ -22,9 +22,9 @@ design:
       _target_: f3dasm.ContinuousParameter
 
 sampler:
-  _target_: mfb.sampling.SobolSequence_torch
-  seed: 1
-  number_of_samples: 512
+  _target_: mfb.sampling.SaltelliSequence_torch
+  seed: 0
+  number_of_samples: 768
 
 slurm:
   arrayid: 0

@@ -8,11 +8,11 @@
 
 #SBATCH --partition=compute
 #SBATCH --time=100:00:00
-#SBATCH --nodes=10
+#SBATCH --nodes=1
 #SBATCH --ntasks-per-node=6
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=0
-#SBATCH --account=research-ME-mse
+#SBATCH --account=research-eemcs-me
 #SBATCH --array=0-9
 
 conda activate compas_env

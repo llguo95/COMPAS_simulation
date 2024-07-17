@@ -14,18 +14,21 @@ def main(config):
     if int(config.slurm.arrayid) == 0:
         """Block 1: Design of Experiment"""
 
-        # Filling the design space
+        # Building (Saltelli) sampler
         sampler = f3dasm.sampling.Sampler.from_yaml(config)
-        # Uncomment this if you want to use the full data set defined in the config
-        data = f3dasm.ExperimentData.from_sampling(sampler)
 
-        # samples = f3dasm.ExperimentData.from_sampling(sampler)
+        # Sampling from the sampler
+        data_gen = f3dasm.ExperimentData.from_sampling(sampler)
 
-        # # Comment this block if you don't want to filter your doe
-        # design = f3dasm.Domain.from_yaml(yaml=config.design)
-        # data = f3dasm.ExperimentData(design=design)
-        # data.add(samples.data.data.loc[30:100].reset_index(drop=True))
-        # #
+        # Set to True if you want to filter your doe
+        filter = False
+
+        if filter:
+            design = f3dasm.Domain.from_yaml(yaml=config.design)
+            data = f3dasm.ExperimentData(design=design)
+            data.add_numpy_arrays(data_gen.data.data.iloc[:5].input)
+        else:
+            data = data_gen
 
         """Block 2: Data Generation"""
 
