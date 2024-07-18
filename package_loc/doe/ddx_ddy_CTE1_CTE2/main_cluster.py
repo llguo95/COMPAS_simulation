@@ -26,19 +26,29 @@ def main(config):
         if filter:
             design = f3dasm.Domain.from_yaml(yaml=config.design)
             data = f3dasm.ExperimentData(design=design)
-            data.add_numpy_arrays(data_gen.data.data.iloc[:5].input)
+            data.add_numpy_arrays(data_gen.data.data.iloc[:1].input)
         else:
             data = data_gen
+
+        input_data = data.get_input_data()
+        input_data.to_csv('input.csv')
 
         """Block 2: Data Generation"""
 
         # Execute the data generation function
-        data.run(
-            compas_function, mode='cluster',
-            kwargs={
-                "slurm_jobid": config.slurm.jobid,
-            }
-        )
+
+        while True:
+            try:
+                data.run(
+                    compas_function, mode='cluster',
+                    kwargs={
+                        "slurm_jobid": config.slurm.jobid,
+                    }
+                )
+            except:
+                continue
+            else:
+                break
 
     # In any other case, the design has already been made
     # Therefore, load it from disk and run my_function on it.
@@ -55,12 +65,18 @@ def main(config):
                 time.sleep(5)
                 pass
 
-        data.run(
-            compas_function, mode='cluster',
-            kwargs={
-                "slurm_jobid": config.slurm.jobid,
-            }
-        )
+        while True:
+            try:
+                data.run(
+                    compas_function, mode='cluster',
+                    kwargs={
+                        "slurm_jobid": config.slurm.jobid,
+                    }
+                )
+            except:
+                continue
+            else:
+                break
 
     # # Store the data generation function
     # data.store()

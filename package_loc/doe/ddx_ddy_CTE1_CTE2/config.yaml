@@ -1,13 +1,5 @@
 design:
   input_space:
-    ddx:
-      _target_: f3dasm.ContinuousParameter
-      lower_bound: 15.0
-      upper_bound: 145.0
-    ddy:
-      _target_: f3dasm.ContinuousParameter
-      lower_bound: 20.0
-      upper_bound: 145.0
     CTE1:
       _target_: f3dasm.ContinuousParameter
       lower_bound: 5.0e-06
@@ -16,6 +8,14 @@ design:
       _target_: f3dasm.ContinuousParameter
       lower_bound: 20.0e-06
       upper_bound: 37.0e-06
+    ddx:
+      _target_: f3dasm.ContinuousParameter
+      lower_bound: 15.0
+      upper_bound: 145.0
+    ddy:
+      _target_: f3dasm.ContinuousParameter
+      lower_bound: 20.0
+      upper_bound: 145.0
 
   output_space:
     acc_nlcr:
