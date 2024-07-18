@@ -1,6 +1,6 @@
 #!/bin/bash -l
 
-#SBATCH -J "compas_mfb"            			# name of the job (can be change to whichever name you like)
+#SBATCH -J "compas_saltelli_doe"            			# name of the job (can be change to whichever name you like)
 #SBATCH --get-user-env             			# to set environment variables
 
 #SBATCH -o DHPC_output_%A_%a.txt         			# output file (DHPC environment)
@@ -8,7 +8,6 @@
 
 #SBATCH --partition=compute
 #SBATCH --time=100:00:00
-#SBATCH --nodes=1
 #SBATCH --ntasks-per-node=6
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=0
