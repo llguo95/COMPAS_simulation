@@ -1,9 +1,8 @@
 design:
   input_space:
     CTE1:
-      _target_: f3dasm.ContinuousParameter
-      lower_bound: 5.0e-06
-      upper_bound: 12.0e-06
+      _target_: f3dasm.CategoricalParameter
+      categories: ['6e-06']
     CTE2:
       _target_: f3dasm.ContinuousParameter
       lower_bound: 20.0e-06
@@ -24,7 +23,7 @@ design:
 sampler:
   _target_: mfb.sampling.SaltelliSequence_torch
   seed: 0
-  number_of_samples: 768
+  number_of_samples: 320
 
 slurm:
   arrayid: 0
