@@ -231,9 +231,9 @@ def compas_opt(
             output_arr = data_initial_doe.output.values
             input_arr = df_input.values
 
-        # Scale the input data
-        lower, upper = bounds.T
-        input_arr = (input_arr - lower) / (upper - lower)
+        # # Scale the input data
+        # lower, upper = bounds.T
+        # input_arr = (input_arr - lower) / (upper - lower)
 
         samples_fidelity.add_numpy_arrays(input_arr, output_arr)
         optimization_fidelity_initial_does.append(samples_fidelity)
