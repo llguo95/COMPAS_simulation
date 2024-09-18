@@ -1,0 +1,49 @@
+defaults:
+  - override hydra/job_logging: custom
+
+design:
+  input_space:
+    regression_type:
+      _target_: f3dasm.CategoricalParameter
+      categories: [
+        "Sogpr",
+        # "MultitaskGPR",
+        ]
+    regression_covar_base_name:
+      _target_: f3dasm.CategoricalParameter
+      categories: [
+        "RBFKernel",
+        "MaternKernel",
+        # "RQKernel",
+      ]
+    optimization_acquisition_type:
+      _target_: f3dasm.CategoricalParameter
+      categories: [
+        # "ProbabilityOfImprovement",
+        "ExpectedImprovement",
+        "UpperConfidenceBound",
+        ]
+  output_space:
+    ddx_rec:
+      _target_: f3dasm.ContinuousParameter
+    ddy_rec:
+      _target_: f3dasm.ContinuousParameter
+    acc_nlcr_rec:
+      _target_: f3dasm.ContinuousParameter
+
+hyperparameters:
+  data:
+    fidelity_parameter_name: "res"
+    low_fidelity_parameter: 20
+    high_fidelity_parameter: 30
+    dimensionality: 3
+    data_initial_doe_size_hf: 174
+  optimization:
+    objective_name: "EA"
+    lf_cost: 0.16
+    iterations: 1
+    budget: 1
+
+slurm:
+  arrayid: 0
+  jobid: '0'
