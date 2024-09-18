@@ -37,7 +37,7 @@ hyperparameters:
     low_fidelity_parameter: 20
     high_fidelity_parameter: 30
     dimensionality: 4
-    data_initial_doe_size_hf: 16
+    data_initial_doe_size_hf: 174
   optimization:
     objective_name: "EA"
     lf_cost: 0.16
