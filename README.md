@@ -1,5 +1,5 @@
 *Author: Leo Guo\
-Latest update: 24 September 2023*
+Latest update: 24 September 2024*
 
 # Instructions
 0. Set up a Python (3.7+) environment.
@@ -10,7 +10,7 @@ Latest update: 24 September 2023*
         ```
     - Set up a new environment that is used for the data-driven pipeline:
         ```
-        conda env create --name compas_env python=3.8
+        conda create --name compas_env python=3.8
         ```
     - Activate the environment:
         ```
