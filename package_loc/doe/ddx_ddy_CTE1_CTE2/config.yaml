@@ -25,12 +25,14 @@ design:
 
 sampler:
   _target_: mfb.sampling.SaltelliSequence_torch
-  seed: 0
+  seed: 1
   number_of_samples: 320
 
 hpc:
   jobid: 0
-  
+
+pbs_jobid: '0'
+
 slurm:
   arrayid: 0
   jobid: '0'
