@@ -1,8 +1,8 @@
  #!/bin/bash
  # Torque directives (#PBS) must always be at the start of a job script!
- #PBS -N compas_mfb
- #PBS -q guest
- #PBS -l nodes=1:ppn=4,walltime=12:00:00
+ #PBS -N compas_pbs
+ #PBS -q mse
+ #PBS -l nodes=1:ppn=6
  #PBS -t 0
 
  # Make sure I'm the only one that can read my output
@@ -12,13 +12,14 @@
 
  module load use.own
  module load anaconda3
- module load ansys/2023r1
+ module load mpi/openmpi-4.1.2
+ module load ansys/2024r1
  cd $PBS_O_WORKDIR
 
  # Here is where the application is started on the node
  # activating my conda environment:
 
- conda activate compas_env
+ source activate compas_env
 
  # limiting number of threads
  OMP_NUM_THREADS=12

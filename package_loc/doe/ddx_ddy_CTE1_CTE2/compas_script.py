@@ -9,37 +9,38 @@ import fileinput
 from pathlib import Path
 
 
-def compas_function(design: f3dasm.Design, slurm_jobid=0):
+def compas_function(design: f3dasm.Design, job_id=0):
     ddx = design.get('ddx')
     ddy = design.get('ddy')
     CTE1 = design.get('CTE1')
     CTE2 = design.get('CTE2')
 
     logging.info("job id %s, job number %s, design %s" % (
-        str(slurm_jobid), str(design.job_number), str([ddx, ddy, CTE1, CTE2])))
+        str(job_id), str(design.job_number), str([ddx, ddy, CTE1, CTE2])))
 
     output = compas_objective(
         ddx=ddx,
         ddy=ddy,
         CTE1=CTE1,
         CTE2=CTE2,
-        jobnumber=design.job_number,
-        slurm_jobid=slurm_jobid
+        job_id=job_id,
+        array_id=design.job_number,
     )
     design.set('acc_nlcr', output)
     return design
 
 
-def compas_objective(ddx, ddy, CTE1, CTE2, rrotz=0., jobnumber=0, slurm_jobid=0, iteration_number=0,):
+def compas_objective(ddx, ddy, CTE1, CTE2, rrotz=0., job_id=0, array_id=0, iteration_number=0,):
     # Resource and work directories
     resources_directory = str(
         Path(__file__).parent.parent.parent / "COMPAS10" / "subinput")
     work_directory = str(Path(__file__).parent.parent.parent / "COMPAS10" /
-                         "suboutput" / "outputs" / str(slurm_jobid) / str(jobnumber) / str(iteration_number))
+                         "suboutput" / "outputs" / str(job_id) / str(array_id) / str(iteration_number))
 
     # Input file
     ansys_input_path_source = resources_directory + "/submodel_run.txt"
-    ansys_input_path = os.getcwd() + "/submodel_run_%s_%d.txt" % (str(slurm_jobid), jobnumber)
+    ansys_input_path = os.getcwd() + "/submodel_run_%s_%d_%d.txt" % (str(job_id),
+                                                                     array_id, iteration_number)
     shutil.copyfile(ansys_input_path_source, ansys_input_path)
     input_file = fileinput.FileInput(files=ansys_input_path, inplace=True)
     for line in input_file:

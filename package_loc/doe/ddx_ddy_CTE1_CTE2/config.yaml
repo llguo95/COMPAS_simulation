@@ -3,6 +3,9 @@ design:
     CTE1:
       _target_: f3dasm.CategoricalParameter
       categories: ['6e-06']
+      # _target_: f3dasm.ContinuousParameter
+      # lower_bound: 5.0e-06
+      # upper_bound: 1.2e-05
     CTE2:
       _target_: f3dasm.ContinuousParameter
       lower_bound: 20.0e-06
@@ -25,6 +28,9 @@ sampler:
   seed: 0
   number_of_samples: 320
 
+hpc:
+  jobid: 0
+  
 slurm:
   arrayid: 0
   jobid: '0'
