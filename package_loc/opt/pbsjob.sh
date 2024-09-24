@@ -13,7 +13,7 @@ JOB_ID=$(echo "${PBS_JOBID}" | sed 's/\[[^][]*\]//g')
 module load use.own
 module load anaconda3
 module load mpi/openmpi-4.1.2
-module load ansys/2024r1
+module load ansys/2023r1
 cd $PBS_O_WORKDIR
 
 # Here is where the application is started on the node
