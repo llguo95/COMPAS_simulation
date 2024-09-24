@@ -326,6 +326,7 @@ def compas_opt(
         function=optimization_function,
         iterations=optimization_iterations,
         samples=optimization_initial_doe,
+        samples_bounds=fidelity_function.scale_bounds,
         budget=optimization_budget,
         jobnumber=array_id,
     )
