@@ -44,6 +44,9 @@ hyperparameters:
     iterations: 1
     budget: 1
 
+hpc:
+  jobid: 0
+
 slurm:
   arrayid: 0
   jobid: '0'

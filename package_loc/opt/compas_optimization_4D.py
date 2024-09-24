@@ -14,7 +14,7 @@ sys.path.insert(0, os.path.abspath(Path(__file__).parent.parent / "doe" / "ddx_d
 from compas_script import compas_objective  # NOQA
 
 
-def compas_opt_function(design: f3dasm.Design, hyperparameters: dict, slurm_jobid):
+def compas_opt_function(design: f3dasm.Design, hyperparameters: dict, job_id):
     logging.info("Optimization function wrapper started.")
     data_initial_doe = pd.read_csv(
         # Path(__file__).parent / "initial_doe_data_res_mf.csv",
@@ -51,8 +51,8 @@ def compas_opt_function(design: f3dasm.Design, hyperparameters: dict, slurm_jobi
         optimization_lf_cost=optimization_lf_cost,
         optimization_iterations=optimization_iterations,
         optimization_budget=optimization_budget,
-        jobnumber=design.job_number,
-        slurm_jobid=slurm_jobid,
+        array_id=design.job_number,
+        job_id=job_id,
     )
 
     x_rec = result['x_rec'].flatten()
@@ -80,8 +80,8 @@ def compas_opt(
         optimization_lf_cost,
         optimization_iterations,
         optimization_budget,
-        jobnumber,
-        slurm_jobid,
+        array_id,
+        job_id,
 ):
     logging.info("Optimization function started.")
 
@@ -185,8 +185,8 @@ def compas_opt(
         if data_fidelity_parameter_name == "res":
             fidelity_function = CompasFunction(
                 seed=123,
-                jobnumber=jobnumber,
-                slurm_jobid=slurm_jobid,
+                array_id=array_id,
+                job_id=job_id,
             )
         bounds = fidelity_function.scale_bounds
         domain = f3dasm.make_nd_continuous_domain(
@@ -277,7 +277,7 @@ def compas_opt(
         iterations=optimization_iterations,
         samples=optimization_initial_doe,
         budget=optimization_budget,
-        jobnumber=jobnumber,
+        jobnumber=array_id,
     )
 
     return optimization_result
@@ -288,14 +288,14 @@ class CompasFunction(f3dasm.Function):
         self,
         seed=None,
         rrotz: float = 0.,
-        jobnumber: int = 0,
-        slurm_jobid=0,
+        array_id: int = 0,
+        job_id=0,
         iteration_number: int = 0,
     ):
         super().__init__(seed)
         self.rrotz = rrotz
-        self.jobnumber = jobnumber
-        self.slurm_jobid = slurm_jobid
+        self.array_id = array_id
+        self.job_id = job_id
         self.iteration_number = iteration_number
         self.scale_bounds = np.array(
             [
@@ -319,9 +319,9 @@ class CompasFunction(f3dasm.Function):
                 CTE1=input_x[0, 2],
                 CTE2=input_x[0, 3],
                 rrotz=self.rrotz,
-                jobnumber=self.jobnumber,
+                job_id=self.job_id,
+                array_id=self.array_id,
                 iteration_number=self.iteration_number,
-                slurm_jobid=self.slurm_jobid,
             )
 
             Objective = output
