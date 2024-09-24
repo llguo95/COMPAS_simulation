@@ -26,7 +26,18 @@ def compas_opt_function(design: f3dasm.Design, hyperparameters: dict, job_id):
     # design
     regression_type = design.get('regression_type')
     regression_covar_base_name = design.get('regression_covar_base_name')
+    regression_gp_initialization = design.get('regression_gp_initialization')
+    optimization_hyperparameter_selection = design.get(
+        'optimization_hyperparameter_selection')
     optimization_acquisition_type = design.get('optimization_acquisition_type')
+    optimization_input_distance_threshold = design.get(
+        'optimization_input_distance_threshold')
+    optimization_input_distance_threshold_end = design.get(
+        'optimization_input_distance_threshold_end')
+    optimization_input_distance_threshold_lf = design.get(
+        'optimization_input_distance_threshold_lf')
+    optimization_input_distance_threshold_end_lf = design.get(
+        'optimization_input_distance_threshold_end_lf')
 
     # hyper
     data_dimensionality = hyperparameters.data.dimensionality
@@ -47,10 +58,16 @@ def compas_opt_function(design: f3dasm.Design, hyperparameters: dict, job_id):
         data_initial_doe_size_hf=data_initial_doe_size_hf,
         regression_type=regression_type,
         regression_covar_base_name=regression_covar_base_name,
+        regression_gp_initialization=regression_gp_initialization,
         optimization_acquisition_type=optimization_acquisition_type,
         optimization_lf_cost=optimization_lf_cost,
         optimization_iterations=optimization_iterations,
         optimization_budget=optimization_budget,
+        optimization_hyperparameter_selection=optimization_hyperparameter_selection,
+        optimization_input_distance_threshold=optimization_input_distance_threshold,
+        optimization_input_distance_threshold_end=optimization_input_distance_threshold_end,
+        optimization_input_distance_threshold_lf=optimization_input_distance_threshold_lf,
+        optimization_input_distance_threshold_end_lf=optimization_input_distance_threshold_end_lf,
         array_id=design.job_number,
         job_id=job_id,
     )
@@ -76,10 +93,16 @@ def compas_opt(
         data_initial_doe_size_hf,
         regression_type,
         regression_covar_base_name,
+        regression_gp_initialization,
         optimization_acquisition_type,
         optimization_lf_cost,
         optimization_iterations,
         optimization_budget,
+        optimization_hyperparameter_selection,
+        optimization_input_distance_threshold,
+        optimization_input_distance_threshold_end,
+        optimization_input_distance_threshold_lf,
+        optimization_input_distance_threshold_end_lf,
         array_id,
         job_id,
 ):
@@ -249,12 +272,30 @@ def compas_opt(
 
     # Optimization-related
     # derivative
-    optimization_parameters = optimization_parameters_class(
-        regressor=regressor_class,
-        acquisition=optimization_acquisition_class,
-        regressor_hyperparameters=regression_parameters,
-        acquisition_hyperparameters=optimization_acquisition_parameters,
-    )
+    if regression_type == 'Sogpr':
+        optimization_parameters = optimization_parameters_class(
+            regressor=regressor_class,
+            acquisition=optimization_acquisition_class,
+            regressor_hyperparameters=regression_parameters,
+            acquisition_hyperparameters=optimization_acquisition_parameters,
+            hyperparameter_selection=optimization_hyperparameter_selection,
+            input_distance_threshold=optimization_input_distance_threshold,
+            input_distance_threshold_end=optimization_input_distance_threshold_end,
+            gp_initialization=regression_gp_initialization,
+        )
+    else:
+        optimization_parameters = optimization_parameters_class(
+            regressor=regressor_class,
+            acquisition=optimization_acquisition_class,
+            regressor_hyperparameters=regression_parameters,
+            acquisition_hyperparameters=optimization_acquisition_parameters,
+            hyperparameter_selection=optimization_hyperparameter_selection,
+            input_distance_threshold_lf=optimization_input_distance_threshold_lf,
+            input_distance_threshold=optimization_input_distance_threshold,
+            input_distance_threshold_end_lf=optimization_input_distance_threshold_end_lf,
+            input_distance_threshold_end=optimization_input_distance_threshold_end,
+            gp_initialization=regression_gp_initialization,
+        )
 
     #######################
     # Parameters: level 6 #

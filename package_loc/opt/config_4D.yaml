@@ -3,26 +3,76 @@ defaults:
 
 design:
   input_space:
+
     regression_type:
       _target_: f3dasm.CategoricalParameter
       categories: [
         "Sogpr",
         # "MultitaskGPR",
         ]
+
     regression_covar_base_name:
       _target_: f3dasm.CategoricalParameter
       categories: [
-        "RBFKernel",
+        # "RBFKernel",
         "MaternKernel",
         # "RQKernel",
       ]
+
+    regression_gp_initialization:
+      _target_: f3dasm.CategoricalParameter
+      categories: [
+        "True",
+        # "False",
+      ]
+
+    optimization_hyperparameter_selection:
+      _target_: f3dasm.CategoricalParameter
+      categories: [
+          # "fixed",
+          "multinomial",
+          # "random",
+        ]
+
     optimization_acquisition_type:
       _target_: f3dasm.CategoricalParameter
       categories: [
-        # "ProbabilityOfImprovement",
-        "ExpectedImprovement",
-        "UpperConfidenceBound",
+        # "ProbabilityOfImprovement", # LogPI
+        # "ExpectedImprovement", # LogEI
+        # "UpperConfidenceBound",
+        "adaptive",
         ]
+
+    optimization_input_distance_threshold: 
+      _target_: f3dasm.CategoricalParameter
+      categories: [
+        "no_threshold",
+        "0.25",
+      ]
+
+    optimization_input_distance_threshold_end: 
+      _target_: f3dasm.CategoricalParameter
+      categories: [
+        # "fixed_threshold",
+        "adaptive_threshold",
+        # "1.5",
+      ]
+
+    optimization_input_distance_threshold_lf: 
+      _target_: f3dasm.CategoricalParameter
+      categories: [
+          "no_threshold",
+          "0.15",
+        ]
+
+    optimization_input_distance_threshold_end_lf: 
+      _target_: f3dasm.CategoricalParameter
+      categories: [
+          # "fixed_threshold",
+          "adaptive_threshold",
+          # "1.5",
+        ]
+
   output_space:
     ddx_rec:
       _target_: f3dasm.ContinuousParameter
