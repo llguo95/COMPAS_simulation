@@ -164,10 +164,19 @@ def compas_opt(
 
     # Optimization-related
     # derivative
+    if regression_type == 'Sogpr':
+        best_f = -np.inf if optimization_maximize else np.inf
+    else:
+        best_f = [-np.inf if optimization_maximize else np.inf] * 2
+
     optimization_acquisition_parameters = mfb.optimization.Acquisition_Parameters(
-        best_f=-np.inf if optimization_maximize else np.inf,
+        best_f=best_f,
         maximize=optimization_maximize,
+        log=True,
     )
+
+    if optimization_acquisition_type == 'adaptive':
+        optimization_acquisition_type = 'UpperConfidenceBound'  # placeholder
 
     if regression_type == "Sogpr":
         optimization_iterations = optimization_budget
