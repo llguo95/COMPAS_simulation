@@ -17,8 +17,6 @@ from compas_script import compas_objective  # NOQA
 def compas_opt_function(design: f3dasm.Design, hyperparameters: dict, job_id):
     logging.info("Optimization function wrapper started.")
     data_initial_doe = pd.read_csv(
-        # Path(__file__).parent / "initial_doe_data_res_mf.csv",
-        # Path(__file__).parent / "doe_data_seed2.csv",
         Path(__file__).parent / "doe_data_4D.csv",
         header=[0, 1], index_col=0
     ).dropna()
@@ -41,26 +39,26 @@ def compas_opt_function(design: f3dasm.Design, hyperparameters: dict, job_id):
 
     # hyper
     data_dimensionality = hyperparameters.data.dimensionality
-    data_fidelity_parameter_name = hyperparameters.data.fidelity_parameter_name
-    data_low_fidelity_parameter = hyperparameters.data.low_fidelity_parameter
-    data_high_fidelity_parameter = hyperparameters.data.high_fidelity_parameter
+    # data_fidelity_parameter_name = hyperparameters.data.fidelity_parameter_name
+    # data_low_fidelity_parameter = hyperparameters.data.low_fidelity_parameter
+    # data_high_fidelity_parameter = hyperparameters.data.high_fidelity_parameter
     data_initial_doe_size_hf = hyperparameters.data.data_initial_doe_size_hf
-    optimization_lf_cost = hyperparameters.optimization.lf_cost
+    # optimization_lf_cost = hyperparameters.optimization.lf_cost
     optimization_iterations = hyperparameters.optimization.iterations
     optimization_budget = hyperparameters.optimization.budget
 
     result = compas_opt(
         data_initial_doe=data_initial_doe,
         data_dimensionality=data_dimensionality,
-        data_fidelity_parameter_name=data_fidelity_parameter_name,
-        data_low_fidelity_parameter=data_low_fidelity_parameter,
-        data_high_fidelity_parameter=data_high_fidelity_parameter,
+        # data_fidelity_parameter_name=data_fidelity_parameter_name,
+        # data_low_fidelity_parameter=data_low_fidelity_parameter,
+        # data_high_fidelity_parameter=data_high_fidelity_parameter,
         data_initial_doe_size_hf=data_initial_doe_size_hf,
         regression_type=regression_type,
         regression_covar_base_name=regression_covar_base_name,
         regression_gp_initialization=regression_gp_initialization,
         optimization_acquisition_type=optimization_acquisition_type,
-        optimization_lf_cost=optimization_lf_cost,
+        # optimization_lf_cost=optimization_lf_cost,
         optimization_iterations=optimization_iterations,
         optimization_budget=optimization_budget,
         optimization_hyperparameter_selection=optimization_hyperparameter_selection,
@@ -87,15 +85,15 @@ def compas_opt_function(design: f3dasm.Design, hyperparameters: dict, job_id):
 def compas_opt(
         data_initial_doe,
         data_dimensionality,
-        data_fidelity_parameter_name,
-        data_low_fidelity_parameter,
-        data_high_fidelity_parameter,
+        # data_fidelity_parameter_name,
+        # data_low_fidelity_parameter,
+        # data_high_fidelity_parameter,
         data_initial_doe_size_hf,
         regression_type,
         regression_covar_base_name,
         regression_gp_initialization,
         optimization_acquisition_type,
-        optimization_lf_cost,
+        # optimization_lf_cost,
         optimization_iterations,
         optimization_budget,
         optimization_hyperparameter_selection,
@@ -212,14 +210,13 @@ def compas_opt(
     # derivative
     fidelity_functions = []
 
-    for fidelity_parameter in [data_low_fidelity_parameter, data_high_fidelity_parameter]:
+    for fidelity_parameter in [None, None]:
         # To be implemented accordingly
-        if data_fidelity_parameter_name == "res":
-            fidelity_function = CompasFunction(
-                seed=123,
-                array_id=array_id,
-                job_id=job_id,
-            )
+        fidelity_function = CompasFunction(
+            seed=123,
+            array_id=array_id,
+            job_id=job_id,
+        )
         bounds = fidelity_function.scale_bounds
         domain = f3dasm.make_nd_continuous_domain(
             bounds=bounds, dimensionality=data_dimensionality
@@ -229,7 +226,7 @@ def compas_opt(
     multifidelity_function = mfb.functions.MultiFidelityFunction(
         fidelity_functions=fidelity_functions,
         fidelity_parameters=[0., 1.],
-        costs=[optimization_lf_cost, 1.],
+        costs=[None, 1.],
     )
 
     if regression_type == "Sogpr":
@@ -238,7 +235,7 @@ def compas_opt(
         optimization_function = multifidelity_function
 
     optimization_fidelity_initial_does = []
-    for fidelity_parameter in [data_low_fidelity_parameter, data_high_fidelity_parameter]:
+    for fidelity_parameter in [None, None]:
         samples_fidelity = f3dasm.ExperimentData(design=domain)
 
         # output_arr = data_initial_doe.output[
