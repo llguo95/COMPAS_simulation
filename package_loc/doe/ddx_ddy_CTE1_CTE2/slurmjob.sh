@@ -1,10 +1,10 @@
 #!/bin/bash -l
 
-#SBATCH -J "compas_saltelli_doe"            			# name of the job (can be change to whichever name you like)
+#SBATCH -J "compas_saltelli_doe_3D"            			# name of the job (can be change to whichever name you like)
 #SBATCH --get-user-env             			# to set environment variables
 
-#SBATCH -o DHPC_output_%A_%a.txt         			# output file (DHPC environment)
-#SBATCH -e DHPC_error_%A_%a.txt          			# error file (DHPC environment)
+#SBATCH -o outputs/DHPC_output_%A_%a.txt         			# output file (DHPC environment)
+#SBATCH -e outputs/DHPC_error_%A_%a.txt          			# error file (DHPC environment)
 
 #SBATCH --partition=compute
 #SBATCH --time=100:00:00
@@ -19,7 +19,7 @@ conda activate compas_env
 myjobid=$SLURM_ARRAY_JOB_ID
 echo "myjobid = " $myjobid
 
-module load 2022r2
+module load 2024r1
 module load openmpi
 module load ansys/2023R2
 
