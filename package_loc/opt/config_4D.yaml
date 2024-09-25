@@ -97,6 +97,8 @@ hyperparameters:
 hpc:
   jobid: 0
 
+pbs_jobid: '0'
+
 slurm:
   arrayid: 0
   jobid: '0'

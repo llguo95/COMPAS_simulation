@@ -14,19 +14,30 @@ sys.path.insert(0, os.path.abspath(Path(__file__).parent.parent / "doe" / "ddx_d
 from compas_script import compas_objective  # NOQA
 
 
-def compas_opt_function(design: f3dasm.Design, hyperparameters: dict, slurm_jobid):
+def compas_opt_function(design: f3dasm.Design, hyperparameters: dict, job_id):
     logging.info("Optimization function wrapper started.")
-    data_initial_doe = pd.read_csv(
-        # Path(__file__).parent / "initial_doe_data_res_mf.csv",
-        # Path(__file__).parent / "doe_data_seed2.csv",
-        Path(__file__).parent / "doe_data_3D.csv",
-        header=[0, 1], index_col=0
-    ).dropna()
 
     # design
+    data_CTE1 = design.get('data_CTE1')
     regression_type = design.get('regression_type')
     regression_covar_base_name = design.get('regression_covar_base_name')
+    regression_gp_initialization = design.get('regression_gp_initialization')
+    optimization_hyperparameter_selection = design.get(
+        'optimization_hyperparameter_selection')
     optimization_acquisition_type = design.get('optimization_acquisition_type')
+    optimization_input_distance_threshold = design.get(
+        'optimization_input_distance_threshold')
+    optimization_input_distance_threshold_end = design.get(
+        'optimization_input_distance_threshold_end')
+    optimization_input_distance_threshold_lf = design.get(
+        'optimization_input_distance_threshold_lf')
+    optimization_input_distance_threshold_end_lf = design.get(
+        'optimization_input_distance_threshold_end_lf')
+
+    data_initial_doe = pd.read_csv(
+        Path(__file__).parent / ("doe_data_3D_CTE1_%dppm.csv" % data_CTE1),
+        header=[0, 1], index_col=0
+    ).dropna()
 
     # hyper
     data_dimensionality = hyperparameters.data.dimensionality
@@ -39,6 +50,7 @@ def compas_opt_function(design: f3dasm.Design, hyperparameters: dict, slurm_jobi
     optimization_budget = hyperparameters.optimization.budget
 
     result = compas_opt(
+        data_CTE1=data_CTE1,
         data_initial_doe=data_initial_doe,
         data_dimensionality=data_dimensionality,
         data_fidelity_parameter_name=data_fidelity_parameter_name,
@@ -47,12 +59,18 @@ def compas_opt_function(design: f3dasm.Design, hyperparameters: dict, slurm_jobi
         data_initial_doe_size_hf=data_initial_doe_size_hf,
         regression_type=regression_type,
         regression_covar_base_name=regression_covar_base_name,
+        regression_gp_initialization=regression_gp_initialization,
         optimization_acquisition_type=optimization_acquisition_type,
         optimization_lf_cost=optimization_lf_cost,
         optimization_iterations=optimization_iterations,
         optimization_budget=optimization_budget,
-        jobnumber=design.job_number,
-        slurm_jobid=slurm_jobid,
+        optimization_hyperparameter_selection=optimization_hyperparameter_selection,
+        optimization_input_distance_threshold=optimization_input_distance_threshold,
+        optimization_input_distance_threshold_end=optimization_input_distance_threshold_end,
+        optimization_input_distance_threshold_lf=optimization_input_distance_threshold_lf,
+        optimization_input_distance_threshold_end_lf=optimization_input_distance_threshold_end_lf,
+        array_id=design.job_number,
+        job_id=job_id,
     )
 
     x_rec = result['x_rec'].flatten()
@@ -67,6 +85,7 @@ def compas_opt_function(design: f3dasm.Design, hyperparameters: dict, slurm_jobi
 
 
 def compas_opt(
+        data_CTE1,
         data_initial_doe,
         data_dimensionality,
         data_fidelity_parameter_name,
@@ -75,12 +94,18 @@ def compas_opt(
         data_initial_doe_size_hf,
         regression_type,
         regression_covar_base_name,
+        regression_gp_initialization,
         optimization_acquisition_type,
         optimization_lf_cost,
         optimization_iterations,
         optimization_budget,
-        jobnumber,
-        slurm_jobid,
+        optimization_hyperparameter_selection,
+        optimization_input_distance_threshold,
+        optimization_input_distance_threshold_end,
+        optimization_input_distance_threshold_lf,
+        optimization_input_distance_threshold_end_lf,
+        array_id,
+        job_id,
 ):
     logging.info("Optimization function started.")
 
@@ -140,10 +165,19 @@ def compas_opt(
 
     # Optimization-related
     # derivative
+    if regression_type == 'Sogpr':
+        best_f = -np.inf if optimization_maximize else np.inf
+    else:
+        best_f = [-np.inf if optimization_maximize else np.inf] * 2
+
     optimization_acquisition_parameters = mfb.optimization.Acquisition_Parameters(
-        best_f=-np.inf if optimization_maximize else np.inf,
+        best_f=best_f,
         maximize=optimization_maximize,
+        log=True,
     )
+
+    if optimization_acquisition_type == 'adaptive':
+        optimization_acquisition_type = 'UpperConfidenceBound'  # placeholder
 
     if regression_type == "Sogpr":
         optimization_iterations = optimization_budget
@@ -184,8 +218,9 @@ def compas_opt(
         if data_fidelity_parameter_name == "res":
             fidelity_function = CompasFunction(
                 seed=123,
-                jobnumber=jobnumber,
-                slurm_jobid=slurm_jobid,
+                CTE1=data_CTE1,
+                array_id=array_id,
+                job_id=job_id,
             )
         bounds = fidelity_function.scale_bounds
         domain = f3dasm.make_nd_continuous_domain(
@@ -248,12 +283,30 @@ def compas_opt(
 
     # Optimization-related
     # derivative
-    optimization_parameters = optimization_parameters_class(
-        regressor=regressor_class,
-        acquisition=optimization_acquisition_class,
-        regressor_hyperparameters=regression_parameters,
-        acquisition_hyperparameters=optimization_acquisition_parameters,
-    )
+    if regression_type == 'Sogpr':
+        optimization_parameters = optimization_parameters_class(
+            regressor=regressor_class,
+            acquisition=optimization_acquisition_class,
+            regressor_hyperparameters=regression_parameters,
+            acquisition_hyperparameters=optimization_acquisition_parameters,
+            hyperparameter_selection=optimization_hyperparameter_selection,
+            input_distance_threshold=optimization_input_distance_threshold,
+            input_distance_threshold_end=optimization_input_distance_threshold_end,
+            gp_initialization=regression_gp_initialization,
+        )
+    else:
+        optimization_parameters = optimization_parameters_class(
+            regressor=regressor_class,
+            acquisition=optimization_acquisition_class,
+            regressor_hyperparameters=regression_parameters,
+            acquisition_hyperparameters=optimization_acquisition_parameters,
+            hyperparameter_selection=optimization_hyperparameter_selection,
+            input_distance_threshold_lf=optimization_input_distance_threshold_lf,
+            input_distance_threshold=optimization_input_distance_threshold,
+            input_distance_threshold_end_lf=optimization_input_distance_threshold_end_lf,
+            input_distance_threshold_end=optimization_input_distance_threshold_end,
+            gp_initialization=regression_gp_initialization,
+        )
 
     #######################
     # Parameters: level 6 #
@@ -275,8 +328,9 @@ def compas_opt(
         function=optimization_function,
         iterations=optimization_iterations,
         samples=optimization_initial_doe,
+        samples_bounds=fidelity_function.scale_bounds,
         budget=optimization_budget,
-        jobnumber=jobnumber,
+        jobnumber=array_id,
     )
 
     return optimization_result
@@ -286,15 +340,17 @@ class CompasFunction(f3dasm.Function):
     def __init__(
         self,
         seed=None,
+        CTE1: float = 6e-6,
         rrotz: float = 0.,
-        jobnumber: int = 0,
-        slurm_jobid=0,
+        array_id: int = 0,
+        job_id=0,
         iteration_number: int = 0,
     ):
         super().__init__(seed)
+        self.CTE1 = CTE1
         self.rrotz = rrotz
-        self.jobnumber = jobnumber
-        self.slurm_jobid = slurm_jobid
+        self.array_id = array_id
+        self.job_id = job_id
         self.iteration_number = iteration_number
         self.scale_bounds = np.array(
             [
@@ -314,12 +370,12 @@ class CompasFunction(f3dasm.Function):
             output = compas_objective(
                 ddx=input_x[0, 0],
                 ddy=input_x[0, 1],
-                CTE1=6e-6,
+                CTE1=self.CTE1,
                 CTE2=input_x[0, 2],
                 rrotz=self.rrotz,
-                jobnumber=self.jobnumber,
+                array_id=self.array_id,
                 iteration_number=self.iteration_number,
-                slurm_jobid=self.slurm_jobid,
+                job_id=self.job_id,
             )
 
             Objective = output
