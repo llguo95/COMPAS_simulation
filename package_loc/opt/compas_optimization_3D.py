@@ -50,7 +50,7 @@ def compas_opt_function(design: f3dasm.Design, hyperparameters: dict, job_id):
     optimization_budget = hyperparameters.optimization.budget
 
     result = compas_opt(
-        data_CTE1=data_CTE1,
+        data_CTE1=data_CTE1 * 1e-6,
         data_initial_doe=data_initial_doe,
         data_dimensionality=data_dimensionality,
         # data_fidelity_parameter_name=data_fidelity_parameter_name,
