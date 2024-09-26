@@ -372,9 +372,9 @@ class CompasFunction(f3dasm.Function):
                 CTE1=self.CTE1,
                 CTE2=input_x[0, 2],
                 rrotz=self.rrotz,
+                job_id=self.job_id,
                 array_id=self.array_id,
                 iteration_number=self.iteration_number,
-                job_id=self.job_id,
             )
 
             Objective = output

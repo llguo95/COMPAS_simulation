@@ -118,7 +118,8 @@ def main(config):
         data.run(
             compas_opt_function, mode='cluster',
             kwargs={
-                "job_id": config.slurm.jobid,
+                # "job_id": config.slurm.jobid,
+                "job_id": config.pbs_jobid,
                 "hyperparameters": config.hyperparameters,
             }
         )
