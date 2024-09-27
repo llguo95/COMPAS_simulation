@@ -77,7 +77,7 @@ def main(config):
              (df_input_filter10.input.optimization_input_distance_threshold_lf != "no_threshold"))
         ].reset_index(drop=True)
 
-        data.add(data=df_input_filter14.reset_index(drop=True))
+        data.add(data=df_input_filter14.iloc[:1].reset_index(drop=True))
 
         # Save input data
         input_data = data.get_input_data()

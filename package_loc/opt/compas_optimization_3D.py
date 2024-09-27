@@ -35,7 +35,7 @@ def compas_opt_function(design: f3dasm.Design, hyperparameters: dict, job_id):
         'optimization_input_distance_threshold_end_lf')
 
     data_initial_doe = pd.read_csv(
-        Path(__file__).parent / ("doe_data_3D_CTE1_%dppm.csv" % data_CTE1),
+        Path(__file__).parent / ("doe_data_3D_CTE1_%sppm.csv" % str(data_CTE1)),
         header=[0, 1], index_col=0
     ).dropna()
 

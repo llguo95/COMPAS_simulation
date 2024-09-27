@@ -7,8 +7,9 @@ design:
     data_CTE1:
       _target_: f3dasm.CategoricalParameter
       categories: [
-        "6",
-        "11",
+        # "6",
+        "8.5",
+        # "11",
         ]
 
     regression_type:
