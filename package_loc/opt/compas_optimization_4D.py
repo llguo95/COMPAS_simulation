@@ -1,4 +1,5 @@
 import logging
+import shutil
 import socket
 import mfb
 import gpytorch
@@ -355,13 +356,14 @@ class CompasFunction(f3dasm.Function):
         )
 
     def __call__(self, input_x: f3dasm.ExperimentData) -> np.ndarray:
-        # input_x = np.insert(input_x, 1, self.res)
-        logging.info('x (unscaled) at f3dasm.Function __call__ = %s' %
-                     str(input_x))
 
         Objective = 0.
-        while bool(Objective == 0.):
-            output = compas_objective(
+        while bool(Objective == 0.) or bool(Objective == 'ERROR'):
+
+            logging.info('x (unscaled) at f3dasm.Function __call__ = %s' %
+                         str(input_x))
+
+            output, _, work_directory, _ = compas_objective(
                 ddx=input_x[0, 0],
                 ddy=input_x[0, 1],
                 CTE1=input_x[0, 2],
@@ -370,15 +372,22 @@ class CompasFunction(f3dasm.Function):
                 job_id=self.job_id,
                 array_id=self.array_id,
                 iteration_number=self.iteration_number,
+                return_wd=True,
             )
 
             Objective = output
 
             if socket.gethostname() == 'hp':
+                Objective = 0.
                 break
 
-            if bool(Objective == 0.):
+            if bool(Objective == 0.) or bool(Objective == 'ERROR'):
                 logging.info('Null objective. Retrying with a random design.')
-                input_x = np.random.rand(*input_x.shape)
+
+                shutil.rmtree(work_directory)
+
+                input_x_scaled = np.random.rand(*input_x.shape)
+                input_x = self.scale_bounds[:, 0] + input_x_scaled * \
+                    (self.scale_bounds[:, 1] - self.scale_bounds[:, 0])
 
         return np.array([Objective])[:, None]

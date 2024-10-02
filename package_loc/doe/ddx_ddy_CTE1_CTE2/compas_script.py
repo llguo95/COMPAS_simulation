@@ -1,4 +1,5 @@
 import logging
+import time
 import numpy as np
 import os
 import f3dasm
@@ -30,7 +31,17 @@ def compas_function(design: f3dasm.Design, job_id=0):
     return design
 
 
-def compas_objective(ddx, ddy, CTE1, CTE2, rrotz=0., job_id=0, array_id=0, iteration_number=0,):
+def compas_objective(
+    ddx,
+    ddy,
+    CTE1,
+    CTE2,
+    rrotz=0.,
+    job_id=0,
+    array_id=0,
+    iteration_number=0,
+    return_wd=False,
+):
     # Resource and work directories
     resources_directory = str(
         Path(__file__).parent.parent.parent / "COMPAS10" / "subinput")
@@ -70,22 +81,30 @@ def compas_objective(ddx, ddy, CTE1, CTE2, rrotz=0., job_id=0, array_id=0, itera
     cmdl = "ansys232 -dir %s -b -dis -mpi openmpi -np 6 -g -i %s >& %s/ansys_solve.out" % (
         work_directory, ansys_input_path, work_directory)
 
+    start = time.time()
     # Running the command line
     if socket.gethostname() == 'hp':
         pass
     else:
         os.system(cmdl)
+    end = time.time()
+
+    # Calculate the total run time of the simulation.
+    simulation_time = end - start
 
     # Reading the output
     if os.path.exists(ansys_output_path):
-        logging.error("Output found.")
         output = pd.read_csv(ansys_output_path, sep='\s+').acc_nlcr.iloc[-1]
+        logging.info("job %d Objective found: %s" % (array_id, str(output)))
     else:
-        logging.error("No output found.")
-        output = np.nan
+        output = 'ERROR'
+        logging.error("job %d No output found." % (array_id))
 
     # # Cleaning up the output directory
     # if socket.gethostname() != 'hp' and os.path.isdir(work_directory):
     #     shutil.rmtree(work_directory)
 
-    return output
+    if return_wd:
+        return output, simulation_time, work_directory, resources_directory
+    else:
+        return output, simulation_time
